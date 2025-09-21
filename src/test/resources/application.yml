@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    # Testcontainers JDBC URL spins up a PostgreSQL 16 container automatically
+    url: jdbc:tc:postgresql:16:///test?currentSchema=products
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username: products_user
+    password: test
+
+  flyway:
+    # Run the same Flyway migrations as production for fidelity
+    enabled: true
+    locations: classpath:db/migration
+    schemas: products
+    placeholders:
+      schema_owner: current_user
+
+logging:
+  level:
+    org.springframework.jdbc.core: DEBUG

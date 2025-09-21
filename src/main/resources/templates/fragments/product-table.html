@@ -1,0 +1,170 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="product-table">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Vendor</th>
+                <th>Type</th>
+                <th>Variants</th>
+                <th>Image</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${productsWithDetails.products}"
+                th:attr="data-product-id=${product.uid}">
+                <td th:text="${product.title}"></td>
+                <td><span class="badge badge-primary" th:text="${product.vendor}"></span></td>
+                <td><span th:unless="${#strings.isEmpty(product.productType)}" class="badge type-badge"
+                          th:text="${product.productType}"></span></td>
+                <td>
+                    <div class="variants-grid"
+                         th:id="'variants-' + ${product.uid}">
+                        <div class="variant-card"
+                             th:each="variant,iterStat : ${product.variants}"
+                             th:if="${iterStat.index < 3}"
+                             th:attr="data-image=${variant.featuredImage?.src}">
+                            <div class="variant-info">
+                                <span class="variant-title" th:text="${variant.title}"></span>
+                                <span class="variant-price" th:text="${'$' + variant.price}"></span>
+                                <span class="variant-sku" th:text="${variant.sku}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <img th:unless="${#strings.isEmpty(product.variants[0]?.featuredImage?.src)}" th:src="${product.variants[0]?.featuredImage?.src}" th:alt="${product.title}" class="product-image">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+
+
+    .badge-primary {
+        background: linear-gradient(135deg, var(--wa-color-primary) 0%, #0056b3 100%);
+        color: white;
+    }
+
+    .table tfoot {
+        border-top: 2px solid #dee2e6;
+    }
+
+    .table tfoot td {
+        background: var(--wa-color-light);
+        font-weight: 500;
+        color: var(--wa-color-muted);
+    }
+
+    .products-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1rem;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        cursor: pointer;
+    }
+
+    .product-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-title {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .vendor-badge, .type-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+    }
+
+    .type-badge {
+        background: #f0f0f0;
+        color: #666;
+    }
+
+    .variants-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        overflow: hidden;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .variants-grid.hidden {
+        opacity: 0;
+        height: 0;
+    }
+
+    .variant-card {
+        background: #f8f9fa;
+        width: 300px;
+        border-radius: 6px;
+        overflow: hidden;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .variant-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .variant-card:hover::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 150px;
+        height: 80px;
+        background-image: var(--variant-image);
+        background-size: cover;
+        background-position: center;
+    }
+
+    .variant-card {
+        --variant-image: url("none");
+    }
+
+    .variant-card[data-image] {
+        --variant-image: url(attr(data-image));
+    }
+
+    .variant-info {
+        padding: 1rem;
+    }
+
+    .variant-title {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .variant-price {
+        color: var(--wa-color-primary);
+        font-weight: 600;
+    }
+
+    .variant-sku {
+        display: block;
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+</style>
+</html>
