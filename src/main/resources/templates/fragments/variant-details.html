@@ -6,10 +6,12 @@
 </head>
 <body>
 <div th:fragment="variant-details(variant)">
-    <wa-details class="variant-details" th:summary="${variant.title}">
+    <!-- Use standard HTML details instead of wa-details -->
+    <details class="variant-details">
+        <summary th:text="${variant.title}">Variant Title</summary>
         <div class="variant-content">
-            <div
-                    th:if="${not #strings.isEmpty(variant.featuredImage?.src)}">
+            <div class="variant-image-wrapper"
+                 th:if="${not #strings.isEmpty(variant.featuredImage?.src)}">
                 <img th:src="${variant.featuredImage.src}"
                      th:alt="${variant.title}"
                      class="variant-image">
@@ -57,7 +59,7 @@
                 </div>
             </div>
         </div>
-    </wa-details>
+    </details>
 </div>
 </body>
 </html>
