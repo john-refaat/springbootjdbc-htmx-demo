@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Variant Details</title>
+</head>
+<body>
+<div th:fragment="variant-details(variant)">
+    <wa-details class="variant-details" th:summary="${variant.title}">
+        <div class="variant-content">
+            <div
+                    th:if="${not #strings.isEmpty(variant.featuredImage?.src)}">
+                <img th:src="${variant.featuredImage.src}"
+                     th:alt="${variant.title}"
+                     class="variant-image">
+            </div>
+
+            <div class="variant-info">
+                <div class="variant-row">
+                    <span class="variant-label">SKU:</span>
+                    <span class="variant-value" th:text="${variant.sku}">-</span>
+                </div>
+
+                <div class="variant-row" th:if="${variant.price != null}">
+                    <span class="variant-label">Price:</span>
+                    <span class="variant-value price"
+                          th:text="${'$' + #numbers.formatDecimal(variant.price, 1, 2)}">-</span>
+                </div>
+
+                <div class="variant-row" th:if="${variant.option1 != null}">
+                    <span class="variant-label">Option 1:</span>
+                    <span class="variant-value" th:text="${variant.option1}">-</span>
+                </div>
+
+                <div class="variant-row" th:if="${variant.option2 != null}">
+                    <span class="variant-label">Option 2:</span>
+                    <span class="variant-value" th:text="${variant.option2}">-</span>
+                </div>
+
+                <div class="variant-row" th:if="${variant.option3 != null}">
+                    <span class="variant-label">Option 3:</span>
+                    <span class="variant-value" th:text="${variant.option3}">-</span>
+                </div>
+
+                <div class="variant-row" th:if="${variant.available != null}">
+                    <span class="variant-label">Available:</span>
+                    <span class="variant-value" th:text="${variant.available}">-</span>
+                </div>
+
+                <div class="variant-actions">
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-copy"></i> Duplicate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </wa-details>
+</div>
+</body>
+</html>
