@@ -9,17 +9,30 @@ import java.sql.ResultSet
 
 @Repository
 class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductRepository {
-    override fun findAllProducts(): List<Product> =
-        jdbcClient.sql("SELECT * from products ORDER BY created_at DESC")
+    override fun findAllProducts(limit: Int?, offset: Int?): List<Product> =
+        jdbcClient.sql(
+            """
+            SELECT * from products 
+            ORDER BY created_at DESC
+            ${if (limit != null) " LIMIT $limit" else ""}
+            ${if (offset != null) " OFFSET $offset" else ""}
+        """.trimIndent()
+        )
             .query{
                 rs, _ -> mapRowToProduct(rs)
             }
             .list()
 
 
-    override fun findAllProductsWithDetails(): List<Product> {
+    override fun findAllProductsWithDetails(limit: Int?, offset: Int?): List<Product> {
         return jdbcClient.sql(
             """
+            WITH paginated_products AS (
+                SELECT * FROM products
+                ORDER BY created_at DESC
+                ${if (limit != null) " LIMIT $limit" else ""}
+                ${if (offset != null) " OFFSET $offset" else ""}
+            )
             SELECT 
                 p.id AS p_id, p.external_id AS p_external_id, p.title AS p_title, 
                 p.vendor AS p_vendor, p.product_type AS p_product_type, p.created_at AS p_created_at,
@@ -28,7 +41,7 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
                 v.sku AS v_sku, v.price AS v_price, v.available AS v_available, v.created_at AS v_created_at,
                 i.id AS i_id, i.external_id AS i_external_id, i.src AS i_src, 
                 i.created_at AS i_created_at
-            FROM products p
+            FROM paginated_products p
             LEFT JOIN variants v ON p.id = v.product_id
             LEFT JOIN images i ON v.image_id = i.id
             ORDER BY p.created_at DESC
@@ -42,6 +55,11 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
             .mapValues { (_, pairs) -> pairs.map { (_, variant) -> variant } }
             .map { (prod, variants) -> prod.copy(variants=variants) }
     }
+
+    override fun countAllProducts(): Long =
+        jdbcClient.sql("SELECT COUNT(*) FROM products")
+            .query(Long::class.java)
+            .single()
 
     override fun findProductById(id: Long): Product? =
         jdbcClient.sql("SELECT * from products WHERE id = :id")

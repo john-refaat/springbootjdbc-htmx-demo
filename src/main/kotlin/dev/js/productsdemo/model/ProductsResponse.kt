@@ -6,7 +6,10 @@ import java.time.OffsetDateTime
 
 
 data class ProductsResponse(
-    val products: List<ProductDTO>
+    val products: List<ProductDTO>,
+    val currentPage: Int = 0,
+    val totalPages: Long?,
+    val pageSize: Int?
 )
 
 data class ProductDTO(

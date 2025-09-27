@@ -4,8 +4,9 @@ import dev.js.productsdemo.domain.Product
 
 
 interface ProductRepository {
-    fun findAllProducts(): List<Product>
-    fun findAllProductsWithDetails(): List<Product>
+    fun findAllProducts(limit: Int?, offset: Int?): List<Product>
+    fun findAllProductsWithDetails(limit: Int?, offset: Int?): List<Product>
+    fun countAllProducts(): Long
     fun findProductById(id: Long): Product?
     fun findProductByExternalId(externalId: Long): Product?
     fun findProductWithDetailsById(id: Long): Product

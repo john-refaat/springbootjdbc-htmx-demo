@@ -33,6 +33,41 @@
             </tr>
             </tbody>
         </table>
+        <div class="pagination-controls d-flex justify-content-between align-items-center mt-3">
+            <div class="page-info">
+                Page <span th:text="${productsWithDetails.currentPage + 1}"></span> of
+                <span th:text="${productsWithDetails.totalPages}"></span>
+                <select class="form-select d-inline-block ms-2"
+                        style="width: auto;"
+                        name="pageSize"
+                        hx-get="/products"
+                        hx-target="#products-table-container"
+                        hx-swap="innerHTML"
+                        hx-trigger="change"
+                        hx-include="this"
+                        th:attr="hx-vals='{&quot;currentPage&quot;:0}'">
+                    <option th:selected="${productsWithDetails.pageSize == 5}" value="5">5 per page</option>
+                    <option th:selected="${productsWithDetails.pageSize == 10}" value="10">10 per page</option>
+                    <option th:selected="${productsWithDetails.pageSize == 20}" value="20">20 per page</option>
+                </select>
+            </div>
+            <div class="page-navigation">
+                <button class="btn btn-outline-primary"
+                        th:disabled="${productsWithDetails.currentPage == 0}"
+                        th:attr="hx-get=@{/products(currentPage=${productsWithDetails.currentPage - 1},pageSize=${productsWithDetails.pageSize})}"
+                        hx-target="#products-table-container"
+                        hx-swap="innerHTML">
+                    Previous
+                </button>
+                <button class="btn btn-outline-primary"
+                        th:disabled="${productsWithDetails.currentPage + 1 >= productsWithDetails.totalPages}"
+                        th:attr="hx-get=@{/products(currentPage=${productsWithDetails.currentPage + 1},pageSize=${productsWithDetails.pageSize})}"
+                        hx-target="#products-table-container"
+                        hx-swap="innerHTML">
+                    Next
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -4,11 +4,8 @@ import dev.js.productsdemo.domain.Image
 import dev.js.productsdemo.domain.Product
 import dev.js.productsdemo.domain.Variant
 import dev.js.productsdemo.mappers.toProductDTO
-import dev.js.productsdemo.mappers.toVariantDTO
-import dev.js.productsdemo.model.ImageDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductsResponse
-import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.repository.ImageRepository
 import dev.js.productsdemo.repository.ProductRepository
 import dev.js.productsdemo.repository.VariantRepository
@@ -16,6 +13,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import kotlin.jvm.java
+import kotlin.math.ceil
 
 @Service
 class ProductServiceImpl(
@@ -28,10 +26,15 @@ class ProductServiceImpl(
     private val logger = LoggerFactory.getLogger(ProductService::class.java)
 
     // Now just delegates to the optimized repository method
-    override fun getAllProductsWithDetails(): ProductsResponse {
+    override fun getAllProductsWithDetails(page: Int, pageSize: Int?): ProductsResponse {
+        val count = productRepository.countAllProducts()
+        val offset = if (pageSize != null) page * pageSize else null
         return ProductsResponse(
-            productRepository.findAllProductsWithDetails()
-                .map { it.toProductDTO() }
+            productRepository.findAllProductsWithDetails(pageSize, offset)
+                .map { it.toProductDTO() },
+            currentPage = page,
+            totalPages = pageSize?.run { ceil(count.toDouble() / this).toLong() },
+            pageSize = pageSize
         )
     }
 
@@ -46,10 +49,15 @@ class ProductServiceImpl(
     }
 
 
-    override fun getAllProducts(): ProductsResponse {
-        val products = productRepository.findAllProducts()
+    override fun getAllProducts(page: Int, pageSize: Int?): ProductsResponse {
+        val count = productRepository.countAllProducts()
+        val offset = if (pageSize != null) page * pageSize else null
+        val products = productRepository.findAllProducts(pageSize, offset)
         return ProductsResponse(
-            products = products.map { it.toProductDTO() }
+            products = products.map { it.toProductDTO() },
+            currentPage = page,
+            totalPages = pageSize?.run { ceil(count.toDouble() / this).toLong() },
+            pageSize = pageSize
         )
     }
 

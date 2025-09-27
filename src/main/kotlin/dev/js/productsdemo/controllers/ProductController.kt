@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam
 class ProductController(private val productService: ProductService) {
 
     @GetMapping("")
-    fun loadProducts(model: Model): String {
+    fun loadProducts(
+        @RequestParam(required = false) currentPage: Int?,
+        @RequestParam(required = false) pageSize: Int?,
+        model: Model
+    ): String {
         println("Loading products...")
-        val productsWithDetails = productService.getAllProductsWithDetails()
+        val productsWithDetails = productService.getAllProductsWithDetails(currentPage?:0, pageSize)
         model.addAttribute("productsWithDetails", productsWithDetails)
         return "fragments/product-table :: product-table"
     }
@@ -38,7 +42,7 @@ class ProductController(private val productService: ProductService) {
         productService.saveProduct(product)
 
         // Return updated table
-        val productsWithDetails = productService.getAllProductsWithDetails()
+        val productsWithDetails = productService.getAllProductsWithDetails(0, null)
         model.addAttribute("productsWithDetails", productsWithDetails)
         return "fragments/product-table"
     }
