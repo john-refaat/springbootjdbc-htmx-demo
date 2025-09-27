@@ -20,13 +20,13 @@
                 <td><span th:unless="${#strings.isEmpty(product.productType)}" class="badge type-badge"
                           th:text="${product.productType}"></span></td>
                 <td>
-                    <div class="variants-grid"
-                         th:id="'variants-' + ${product.uid}">
+                    <div class="variants-grid"  th:id="'variants-' + ${product.uid}"
+                         th:unless="${#lists.isEmpty(product.variants)}">
                         <div th:replace="fragments/variants-list :: variants-list(${product})"></div>
                     </div>
                 </td>
                 <td>
-                    <img th:unless="${#strings.isEmpty(product.variants[0]?.featuredImage?.src)}"
+                    <img th:unless="${#lists.isEmpty(product.variants) or #strings.isEmpty(product.variants[0]?.featuredImage?.src)}"
                          th:src="${product.variants[0]?.featuredImage?.src}" th:alt="${product.title}"
                          class="product-image">
                 </td>

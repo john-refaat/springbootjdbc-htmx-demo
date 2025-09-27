@@ -41,7 +41,7 @@
                 <form hx-post="/products"
                       hx-target="#products-table-container"
                       hx-swap="innerHTML"
-                      hx-on::after-request="alert('hello');this.reset()">
+                      hx-on::after-request="this.reset()">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="title" class="form-label">Product Title *</label>

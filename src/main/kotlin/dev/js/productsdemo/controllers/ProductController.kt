@@ -2,6 +2,7 @@ package dev.js.productsdemo.controllers
 
 import dev.js.productsdemo.domain.Product
 import dev.js.productsdemo.service.ProductService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller
 @RequestMapping("/products")
 class ProductController(private val productService: ProductService) {
+    private val logger = LoggerFactory.getLogger(ProductController::class.java)
 
     @GetMapping("")
     fun loadProducts(
@@ -19,7 +21,7 @@ class ProductController(private val productService: ProductService) {
         @RequestParam(required = false) pageSize: Int?,
         model: Model
     ): String {
-        println("Loading products...")
+        logger.info("Loading products with page: {}, size: {}", currentPage, pageSize)
         val productsWithDetails = productService.getAllProductsWithDetails(currentPage?:0, pageSize)
         model.addAttribute("productsWithDetails", productsWithDetails)
         return "fragments/product-table :: product-table"
@@ -32,6 +34,7 @@ class ProductController(private val productService: ProductService) {
         @RequestParam(required = false) productType: String?,
         model: Model
     ): String {
+        logger.info("Adding new product - title: {}, vendor: {}, type: {}", title, vendor, productType)
         val product = Product(
             externalId = System.currentTimeMillis(), // Use timestamp as external ID for manually added products
             title = title,

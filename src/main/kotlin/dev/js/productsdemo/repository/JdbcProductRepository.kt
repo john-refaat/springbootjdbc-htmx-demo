@@ -18,8 +18,8 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
             ${if (offset != null) " OFFSET $offset" else ""}
         """.trimIndent()
         )
-            .query{
-                rs, _ -> mapRowToProduct(rs)
+            .query { rs, _ ->
+                mapRowToProduct(rs)
             }
             .list()
 
@@ -53,7 +53,7 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
             .list()
             .groupBy { (prod, _) -> prod }
             .mapValues { (_, pairs) -> pairs.map { (_, variant) -> variant } }
-            .map { (prod, variants) -> prod.copy(variants=variants) }
+            .map { (prod, variants) -> prod.copy(variants = variants.filterNotNull()) }
     }
 
     override fun countAllProducts(): Long =
@@ -64,17 +64,16 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
     override fun findProductById(id: Long): Product? =
         jdbcClient.sql("SELECT * from products WHERE id = :id")
             .param("id", id)
-            .query {
-                rs, _ -> mapRowToProduct(rs)
+            .query { rs, _ ->
+                mapRowToProduct(rs)
             }.optional().orElse(null)
-
 
 
     override fun findProductByExternalId(externalId: Long): Product? {
         return jdbcClient.sql("SELECT * from products WHERE external_id = :externalId")
             .param("externalId", externalId)
-            .query{
-                    rs, _ -> mapRowToProduct(rs)
+            .query { rs, _ ->
+                mapRowToProduct(rs)
             }
             .optional().orElse(null)
     }
@@ -103,7 +102,7 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
             }.list()
             .groupBy { (prod, _) -> prod }
             .mapValues { (_, pairs) -> pairs.map { (_, variant) -> variant } }
-            .map { (prod, variants) -> prod.copy(variants=variants) }[0]
+            .map { (prod, variants) -> prod.copy(variants = variants.filterNotNull()) }[0]
     }
 
 
@@ -125,8 +124,6 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
 
         return product.copy(id = generatedId)
     }
-
-
 
 
     override fun updateProduct(product: Product): Product? {
@@ -176,7 +173,7 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
         )
     }
 
-    private fun mapRowToProductWithDetails(rs: ResultSet): Pair<Product, Variant> {
+    private fun mapRowToProductWithDetails(rs: ResultSet): Pair<Product, Variant?> {
         val product = Product(
             id = rs.getLong("p_id"),
             externalId = rs.getLong("p_external_id"),
@@ -186,25 +183,28 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
             createdAt = RepositoryUtil.extractTimeStampTZ(rs.getTimestamp("p_created_at"))
         )
 
-        val variant = Variant(
-            id = rs.getLong("v_id"),
-            externalId = rs.getLong("v_external_id"),
-            productId = rs.getLong("p_id"),
-            title = rs.getString("v_title"),
-            option1 = rs.getString("v_option1"),
-            option2 = rs.getString("v_option2"),
-            option3 = rs.getString("v_option3"),
-            sku = rs.getString("v_sku"),
-            price = rs.getBigDecimal("v_price"),
-            available = rs.getBoolean("v_available"),
-            createdAt = RepositoryUtil.extractTimeStampTZ(rs.getTimestamp("v_created_at")),
-            featuredImage = if (rs.getLong("i_id") != 0L) Image(
-                id = rs.getLong("i_id"),
-                externalId = rs.getLong("i_external_id"),
-                src = rs.getString("i_src"),
-                createdAt = RepositoryUtil.extractTimeStampTZ(rs.getTimestamp("i_created_at"))
-            ) else null
-        )
+
+        val variant = rs.getObject("v_id")?.run {
+            Variant(
+                id = rs.getLong("v_id"),
+                externalId = rs.getLong("v_external_id"),
+                productId = rs.getLong("p_id"),
+                title = rs.getString("v_title"),
+                option1 = rs.getString("v_option1"),
+                option2 = rs.getString("v_option2"),
+                option3 = rs.getString("v_option3"),
+                sku = rs.getString("v_sku"),
+                price = rs.getBigDecimal("v_price"),
+                available = rs.getBoolean("v_available"),
+                createdAt = RepositoryUtil.extractTimeStampTZ(rs.getTimestamp("v_created_at")),
+                featuredImage = if (rs.getLong("i_id") != 0L) Image(
+                    id = rs.getLong("i_id"),
+                    externalId = rs.getLong("i_external_id"),
+                    src = rs.getString("i_src"),
+                    createdAt = RepositoryUtil.extractTimeStampTZ(rs.getTimestamp("i_created_at"))
+                ) else null
+            )
+        }
 
         return Pair(product, variant)
     }
