@@ -54,14 +54,16 @@ class JdbcVariantRepository(private val jdbcClient: JdbcClient) : VariantReposit
     }
 
     override fun saveOrUpdateVariant(variant: Variant): Variant? {
-        if (variantExists(variant.externalId)) {
+        if (variant.id !=null) {
             updateVariant(variant)
         } else {
             saveVariant(variant)
         }
 
-        return findVariantByExternalId(variant.externalId)
-            ?.copy(featuredImage = variant.featuredImage)
+        return variant.externalId?.run {
+            findVariantByExternalId(this)
+                ?.copy(featuredImage = variant.featuredImage)
+        }
     }
 
     override fun findVariantByExternalId(externalId: Long): Variant? {
@@ -138,7 +140,8 @@ class JdbcVariantRepository(private val jdbcClient: JdbcClient) : VariantReposit
                 sku = :sku,
                 price = :price,
                 available = :available
-            WHERE external_id = :externalId
+                externalId = :externalId
+            WHERE id = :id
         """.trimIndent()
         val updated = jdbcClient.sql(updateSql)
             .param("productId", variant.productId)
@@ -151,6 +154,7 @@ class JdbcVariantRepository(private val jdbcClient: JdbcClient) : VariantReposit
             .param("price", variant.price)
             .param("available", variant.available)
             .param("externalId", variant.externalId)
+            .param("id", variant.id)
             .update()
 
         return if (updated == 1) variant else null

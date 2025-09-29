@@ -1,9 +1,11 @@
 package dev.js.productsdemo.service
 
 import dev.js.productsdemo.domain.Image
-import dev.js.productsdemo.domain.Product
 import dev.js.productsdemo.domain.Variant
+import dev.js.productsdemo.mappers.toProduct
 import dev.js.productsdemo.mappers.toProductDTO
+import dev.js.productsdemo.mappers.toVariant
+import dev.js.productsdemo.mappers.toVariantDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductsResponse
 import dev.js.productsdemo.repository.ImageRepository
@@ -12,7 +14,6 @@ import dev.js.productsdemo.repository.VariantRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import kotlin.jvm.java
 import kotlin.math.ceil
 
 @Service
@@ -38,8 +39,17 @@ class ProductServiceImpl(
         )
     }
 
-    override fun saveProduct(product: Product): ProductDTO {
-        return productRepository.saveProduct(product).toProductDTO()
+    override fun saveProduct(productDTO: ProductDTO): ProductDTO {
+        val productDTO = productRepository.saveProduct(productDTO.toProduct()).toProductDTO()
+
+        val variantDTOs = productDTO.variants.map { variantDTO -> variantDTO.toVariant() }
+            .map { variant ->
+                val savedFeaturedImage = variant.featuredImage?.let { imageRepository.saveImage(it) }
+                variantRepository.saveOrUpdateVariant(variant.copy(featuredImage = savedFeaturedImage))
+            }.mapNotNull { variant ->
+                variant?.toVariantDTO()
+            }
+        return productDTO.copy(variants = variantDTOs.toMutableList())
     }
 
     override fun getProductById(id: Long): ProductDTO {
@@ -76,35 +86,30 @@ class ProductServiceImpl(
             productRepository.deleteAllProducts()
 
             // Process limited number of products
-            products.take(50).forEach { product ->
-                logger.info("Saving product ${product.title} (${product.externalId})")
-                println(product)
+            products.take(50).forEach { productDTO ->
+                logger.info("Saving product ${productDTO.title} (${productDTO.externalId})")
+                println(productDTO)
                 // Save the product
                 val savedProduct = productRepository.saveProduct(
-                    Product(
-                        externalId = product.externalId,
-                        title = product.title,
-                        vendor = product.vendor,
-                        productType = product.productType,
-                        createdAt = product.createdAt
-                    )
+                    productDTO.toProduct()
                 )
 
                 val productId = savedProduct.id!!
 
                 // Save variants
-                product.variants?.forEach { variantDTO ->
+                productDTO.variants.forEach { variantDTO ->
 
-                    val featuredImage = imageRepository.findImageByExternalId(variantDTO.featuredImage?.externalId ?: -1L)
-                        ?: variantDTO.featuredImage?.let { imageDTO ->
-                            imageRepository.saveImage(
-                                image = Image(
-                                    externalId = imageDTO.externalId,
-                                    src = imageDTO.src,
-                                    createdAt = imageDTO.createdAt
+                    val featuredImage =
+                        imageRepository.findImageByExternalId(variantDTO.featuredImage?.externalId ?: -1L)
+                            ?: variantDTO.featuredImage?.let { imageDTO ->
+                                imageRepository.saveImage(
+                                    image = Image(
+                                        externalId = imageDTO.externalId,
+                                        src = imageDTO.src,
+                                        createdAt = imageDTO.createdAt
+                                    )
                                 )
-                            )
-                        }
+                            }
 
                     variantRepository.saveOrUpdateVariant(
                         variant = Variant(

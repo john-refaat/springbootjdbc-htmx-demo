@@ -16,8 +16,8 @@ data class Product(
 
 data class Variant(
     val id: Long? = null,
-    val externalId: Long,
-    val productId: Long,
+    val externalId: Long?,
+    val productId: Long?,
     val featuredImage: Image? = null,
     val title: String,
     val option1: String?,

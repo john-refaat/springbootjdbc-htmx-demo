@@ -2,8 +2,14 @@ package dev.js.productsdemo.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.OffsetDateTime
 
+
+data class ProductRequest(
+    val product: ProductDTO,
+    val pageSize: Int = 5
+)
 
 data class ProductsResponse(
     val products: List<ProductDTO>,
@@ -13,25 +19,25 @@ data class ProductsResponse(
 )
 
 data class ProductDTO(
-    val uid: Long?,
+    val uid: Long? = null,
     @param:JsonProperty("id")
-    val externalId: Long,
-    val title: String,
-    val vendor: String?,
+    val externalId: Long = Instant.now().toEpochMilli(),
+    val title: String = "",
+    val vendor: String = "",
     @param:JsonProperty("product_type")
-    val productType: String?,
+    val productType: String = "",
     @param:JsonProperty("created_at")
-    val createdAt: OffsetDateTime?,
+    val createdAt: OffsetDateTime? = null,
     @param:JsonProperty("variants")
-    val variants: List<VariantDTO>?
+    val variants: MutableList<VariantDTO> = mutableListOf()
 )
 
 data class VariantDTO(
     val uid: Long?,
     @param:JsonProperty("id")
-    val externalId: Long,
+    val externalId: Long?,
     @param:JsonProperty("product_id")
-    val productId: Long,
+    val productId: Long?,
     val title: String,
     val option1: String?,
     val option2: String?,

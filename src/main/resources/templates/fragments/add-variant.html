@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Variant</title>
+</head>
+<body>
+<div th:fragment="variant-row(variantIndex)" th:object="${newProduct}">
+    <div class="variant-row new-variant" th:attr="data-variant-index=${variantIndex}">
+        <div class="variant-fields">
+            <div class="variant-header-section">
+            <label class="form-label enhanced">
+                <i class="fas fa-tag"></i>
+                Variant Title
+            </label>
+            <input type="text"
+                   th:name="'variants[' + ${variantIndex} + '].title'"
+                   th:field="*{product.variants[__${variantIndex}__].title}"
+                   class="form-control enhanced variant-title-input"
+                   placeholder="e.g., Red Large T-Shirt">
+        </div>
+
+            <!-- Changed to a two-column grid layout -->
+            <div class="variant-grid">
+                <!-- Column 1 -->
+                <div class="variant-column">
+                    <div class="form-group">
+                        <label class="form-label enhanced">External ID</label>
+                        <input type="text"
+                               th:name="'variants[' + ${variantIndex} + '].externalId'"
+                               th:field="*{product.variants[__${variantIndex}__].externalId}"
+                               class="form-control enhanced">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label enhanced">Option 1</label>
+                        <input type="text"
+                               th:name="'variants[' + ${variantIndex} + '].option1'"
+                               th:field="*{product.variants[__${variantIndex}__].option1}"
+                               class="form-control enhanced"
+                               placeholder="e.g., Color">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label enhanced">Option 2</label>
+                        <input type="text"
+                               th:name="'variants[' + ${variantIndex} + '].option2'"
+                               th:field="*{product.variants[__${variantIndex}__].option2}"
+                               class="form-control enhanced"
+                               placeholder="e.g., Size">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label enhanced">Option 3</label>
+                        <input type="text"
+                               th:name="'variants[' + ${variantIndex} + '].option3'"
+                               th:field="*{product.variants[__${variantIndex}__].option3}"
+                               class="form-control enhanced"
+                               placeholder="e.g., Material">
+                    </div>
+
+
+                </div>
+
+                <!-- Column 2 -->
+                <div class="variant-column">
+                    <div class="form-group">
+                        <label class="form-label enhanced">
+                            <i class="fas fa-dollar-sign"></i>
+                            Price *
+                        </label>
+                        <input type="number"
+                               th:name="'variants[' + ${variantIndex} + '].price'"
+                               th:field="*{product.variants[__${variantIndex}__].price}"
+                               class="form-control enhanced"
+                               required
+                               step="0.01"
+                               min="0"
+                               placeholder="0.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label enhanced">SKU</label>
+                        <input type="text"
+                               th:name="'variants[' + ${variantIndex} + '].sku'"
+                               th:field="*{product.variants[__${variantIndex}__].sku}"
+                               class="form-control enhanced"
+                               placeholder="Product SKU">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label enhanced">
+                            <i class="fas fa-check-circle"></i>
+                            Available
+                        </label>
+                        <select th:name="'variants[' + ${variantIndex} + '].available'"
+                                th:field="*{product.variants[__${variantIndex}__].available}"
+                                class="form-control enhanced">
+                            <option value="true" selected>Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger enhanced" onclick="removeVariant(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</div>
+</body>
+</html>

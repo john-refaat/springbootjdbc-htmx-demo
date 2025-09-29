@@ -7,7 +7,7 @@ import dev.js.productsdemo.model.ProductsResponse
 interface ProductService {
     fun getAllProductsWithDetails(page: Int, pageSize: Int?): ProductsResponse
     fun getProductById(id: Long): ProductDTO
-    fun saveProduct(product: Product): ProductDTO
+    fun saveProduct(productDTO: ProductDTO): ProductDTO
     fun fetchAndSaveExternalProducts()
     fun getAllProducts(page: Int, pageSize: Int?): ProductsResponse
 }

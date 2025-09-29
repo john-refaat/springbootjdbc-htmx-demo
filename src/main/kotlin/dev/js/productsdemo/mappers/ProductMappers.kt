@@ -39,9 +39,42 @@ fun Product.toProductDTO(): ProductDTO {
         uid = this.id,
         externalId = this.externalId,
         title = this.title,
+        vendor = this.vendor?:"",
+        productType = this.productType?:"",
+        createdAt = this.createdAt,
+        variants = this.variants?.map { it.toVariantDTO() }?.toMutableList()?:mutableListOf()
+    )
+}
+
+fun ImageDTO.toImage(): Image = Image(
+    id = this.uid,
+    externalId = this.externalId,
+    src = this.src,
+    createdAt = this.createdAt
+)
+
+fun VariantDTO.toVariant(): Variant = Variant(
+    externalId = this.externalId,
+    productId = this.productId,
+    featuredImage = featuredImage?.toImage(),
+    title = this.title,
+    option1 = this.option1,
+    option2 = this.option2,
+    option3 = this.option3,
+    sku = this.sku,
+    price = this.price,
+    available = this.available,
+    createdAt = this.createdAt
+)
+
+fun ProductDTO.toProduct(): Product {
+    return Product(
+        id = this.uid,
+        externalId = this.externalId,
+        title = this.title,
         vendor = this.vendor,
         productType = this.productType,
         createdAt = this.createdAt,
-        variants = this.variants?.map { it.toVariantDTO() }
+        variants = this.variants.map { it.toVariant() }
     )
 }

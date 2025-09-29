@@ -1,0 +1,731 @@
+/* Enhanced Modern Styling */
+
+/* Enhanced Body */
+body.enhanced {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+/* Enhanced Card */
+.card.enhanced {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+/* Enhanced Card Header */
+.card-header.enhanced {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header.enhanced::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+    50% { transform: translateX(0%) translateY(0%) rotate(180deg); }
+}
+
+.card-title.enhanced {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.card-subtitle.enhanced {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced Buttons */
+.btn.enhanced {
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    justify-content: center;
+    min-height: 48px;
+}
+
+.btn.enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn.enhanced:active {
+    transform: translateY(0);
+}
+
+.btn-primary.enhanced {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.btn-success.enhanced {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    width: 100%;
+    font-size: 1.125rem;
+    padding: 1rem 2rem;
+}
+
+.btn-danger.enhanced {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    min-height: auto;
+}
+
+.add-variant-btn {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    margin-top: 1rem;
+}
+
+/* Enhanced Table Container */
+.table-container.enhanced {
+    margin-top: 2rem;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+/* Enhanced Form Section */
+.form-section.enhanced {
+    padding: 0;
+    margin: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transform: translateY(10px);
+    opacity: 0;
+    animation: slideUp 0.6s ease-out 0.3s forwards;
+    border: none;
+}
+
+@keyframes slideUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.form-header.enhanced {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    position: relative;
+    border-bottom: none;
+}
+
+.form-title.enhanced {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.form-body.enhanced {
+    padding: 2rem;
+}
+
+.form-grid.enhanced {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group.enhanced {
+    position: relative;
+}
+
+.form-label.enhanced {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-control.enhanced {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    line-height: 1.5;
+    height: auto;
+    min-height: 42px;
+}
+
+.form-control.enhanced:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-control.enhanced:hover {
+    border-color: #9ca3af;
+}
+
+/* Enhanced Select Dropdown Fix */
+select.form-control.enhanced {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%237c3aed' d='M4.5 6l3.5 3.5L11.5 6'/%3E%3C/svg%3E") !important;
+    background-position: right 0.75rem center !important;
+    background-repeat: no-repeat !important;
+    background-size: 16px 16px !important;
+    padding-right: 2.5rem !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+select.form-control.enhanced option {
+    padding: 0.5rem;
+    height: auto;
+}
+
+/* Enhanced Variants Section */
+.variants-section {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border: 2px dashed #e2e8f0;
+}
+
+.variants-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.variants-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Enhanced Variant Row - NEW GRID STRUCTURE */
+.variant-row {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.variant-row:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.variant-row .btn-danger {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.variant-fields {
+    padding-right: 60px; /* Space for delete button */
+}
+
+.variant-header-section {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.variant-title-input {
+    font-weight: 600;
+    border: 2px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.variant-title-input:focus {
+    background: white;
+    border-color: #667eea;
+}
+
+/* Grid Layout for Variant Options */
+.variant-options-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.variant-details-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.variant-price-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Enhanced Animations */
+@keyframes slideInVariant {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.variant-row.new-variant {
+    animation: slideInVariant 0.4s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        max-height: 300px;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+        max-height: 0;
+        margin-bottom: 0;
+        padding: 0;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Load Products Section */
+.load-products-section {
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 16px;
+    margin: 2rem;
+}
+
+/* Success Message */
+.success-message {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Empty State */
+.empty-state.enhanced {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+}
+
+.empty-state.enhanced i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Enhanced Loading */
+.loading.enhanced {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading.enhanced::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #667eea;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Variant Display Components */
+.variant-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wa-spacing-xs);
+}
+
+.variant-item {
+    display: flex;
+    align-items: center;
+    gap: var(--wa-spacing-sm);
+    padding: var(--wa-spacing-xs) var(--wa-spacing-sm);
+    background: rgba(13, 110, 253, 0.05);
+    border-radius: var(--wa-border-radius);
+    font-size: var(--wa-font-size-sm);
+}
+
+.variant-more {
+    color: var(--wa-color-muted);
+    font-size: var(--wa-font-size-sm);
+    font-style: italic;
+    margin-top: var(--wa-spacing-xs);
+}
+
+.variant-details summary {
+    padding: 1rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-weight: 500;
+    color: #333;
+    border-bottom: 1px solid #e9ecef;
+    list-style: none;
+    position: relative;
+}
+
+.variant-details summary::after {
+    content: '▼';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.variant-details[open] summary::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.variant-content {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    min-width: 400px;
+}
+
+.variant-image-wrapper {
+    position: relative;
+    flex: 0 0 75px;
+    width: 75px;
+    overflow: visible;
+    border-radius: var(--wa-border-radius);
+    display: block;
+}
+
+.variant-image {
+    width: 75px !important;
+    height: auto !important;
+    object-fit: cover;
+    border-radius: var(--wa-border-radius);
+    border: 2px solid #e9ecef;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    z-index: 1;
+    transform-origin: center center;
+}
+
+.variant-image:hover {
+    border-color: var(--wa-color-primary);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.variant-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 250px;
+}
+
+.variant-label {
+    font-weight: 500;
+    color: #6c757d;
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.variant-value {
+    color: #2c3e50;
+    flex: 1;
+}
+
+.price {
+    font-weight: 600;
+    color: var(--wa-color-primary);
+}
+
+.compare-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.out-of-stock {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.variant-price {
+    color: var(--wa-color-primary);
+    font-weight: 600;
+}
+
+.variant-options {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #dee2e6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+}
+
+.variant-option {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.option-name {
+    color: #6c757d;
+}
+
+.option-value {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.variant-actions {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Product Components */
+.products-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    cursor: pointer;
+}
+
+.product-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.product-title {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.vendor-badge, .type-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.875rem;
+}
+
+.type-badge {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.variants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    overflow: hidden;
+    transition: opacity 0.3s ease-out;
+}
+
+.variants-grid.hidden {
+    opacity: 0;
+    height: 0;
+}
+
+.variant-card {
+    background: #f8f9fa;
+    min-width: 450px;
+    max-width: 600px;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.variant-card:hover {
+    transform: translateY(-2px);
+}
+
+.variant-title {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.variant-sku {
+    display: block;
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Container Updates */
+.variants-container,
+.wa-stack {
+    width: 100%;
+    max-width: none;
+}
+
+/* Floating animation for icons */
+.card-title i, .form-title i, .variants-title i {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 768px) {
+    .form-grid.enhanced {
+        grid-template-columns: 1fr;
+    }
+
+    .variant-options-row,
+    .variant-details-row,
+    .variant-price-row {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .variant-row .btn-danger {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        height: auto;
+        padding: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .variant-fields {
+        padding-right: 0;
+    }
+
+    .card-title.enhanced {
+        font-size: 2rem;
+    }
+
+    .form-section.enhanced {
+        margin: 1rem;
+    }
+
+    .variant-details {
+        min-width: 300px;
+    }
+
+    .variant-content {
+        min-width: 300px;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .variant-image-wrapper {
+        flex: none;
+        align-self: center;
+    }
+}

@@ -6,70 +6,131 @@
     <title>Products Demo - Spring Boot + HTMX</title>
 
     <!-- Web Awesome CSS -->
-    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-beta.5/dist/styles/webawesome.css" />
+    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-beta.5/dist/styles/webawesome.css"/>
     <script type="module" src="https://early.webawesome.com/webawesome@3.0.0-beta.5/dist/webawesome.loader.js"></script>
 
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/base-styles.css"/>
+    <link rel="stylesheet" href="/css/enhanced-styles.css"/>
 
     <!-- HTMX -->
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
-
 </head>
-<body>
+<body class="enhanced">
 <div class="container">
     <!-- Header Card -->
-    <div class="card">
-        <div class="card-header">
-            <h1 class="card-title">
+    <div class="card enhanced">
+        <div class="card-header enhanced">
+            <h1 class="card-title enhanced">
                 <i class="fas fa-shopping-cart"></i>
                 Products Demo
             </h1>
-            <p class="card-subtitle">
+            <p class="card-subtitle enhanced">
                 Modern Spring Boot application with HTMX, Thymeleaf, and Web Awesome components
             </p>
         </div>
+
         <!-- Add Product Form -->
-        <div class="form-section" id="add-product-form">
-            <div class="form-header">
-                <h2 class="form-title">
+        <div class="form-section enhanced" id="add-product-form">
+            <div class="form-header enhanced">
+                <h2 class="form-title enhanced">
                     <i class="fas fa-plus-circle"></i>
                     Add New Product
                 </h2>
             </div>
-            <div class="form-body">
+            <div class="form-body enhanced">
+                <div class="success-message" id="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    Product added successfully!
+                </div>
+
                 <form hx-post="/products"
+                      th:object="${newProduct}"
                       hx-target="#products-table-container"
                       hx-swap="innerHTML"
-                      hx-on::after-request="this.reset()">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="title" class="form-label">Product Title *</label>
+                      hx-on::after-request="handleFormSubmit(this, event)">
+                    <div class="form-grid enhanced">
+                        <div class="form-group enhanced">
+                            <label for="title" class="form-label enhanced">
+                                <i class="fas fa-tag"></i>
+                                Product Title *
+                            </label>
                             <input type="text"
                                    id="title"
                                    name="title"
-                                   class="form-control"
+                                   th:field="*{product.title}"
+                                   class="form-control enhanced"
                                    required
                                    placeholder="Enter product title">
                         </div>
-                        <div class="form-group">
-                            <label for="vendor" class="form-label">Vendor/Brand</label>
+
+                        <div class="form-group enhanced">
+                            <label for="vendor" class="form-label enhanced">
+                                <i class="fas fa-building"></i>
+                                Vendor/Brand
+                            </label>
                             <input type="text"
                                    id="vendor"
                                    name="vendor"
-                                   class="form-control"
+                                   th:field="*{product.vendor}"
+                                   class="form-control enhanced"
                                    placeholder="Enter vendor name">
                         </div>
-                        <div class="form-group">
-                            <label for="product_type" class="form-label">Product Type</label>
+
+                        <div class="form-group enhanced">
+                            <label for="product_type" class="form-label enhanced">
+                                <i class="fas fa-layer-group"></i>
+                                Product Type
+                            </label>
                             <input type="text"
                                    id="product_type"
-                                   name="product_type"
-                                   class="form-control"
+                                   name="productType"
+                                   th:field="*{product.productType}"
+                                   class="form-control enhanced"
                                    placeholder="e.g., Clothing, Electronics">
                         </div>
+
+                        <div class="form-group enhanced">
+                            <label for="external_id" class="form-label enhanced">
+                                <i class="fas fa-external-link-alt"></i>
+                                External ID
+                            </label>
+                            <input type="text"
+                                   id="external_id"
+                                   name="external_id"
+                                   th:field="*{product.externalId}"
+                                   class="form-control enhanced"
+                                   placeholder="External identifier">
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-success btn-lg">
+
+                    <div class="variants-section">
+                        <div class="variants-header">
+                            <h3 class="variants-title">
+                                <i class="fas fa-cubes"></i>
+                                Product Variants
+                            </h3>
+                        </div>
+
+                        <div id="variants-container">
+                            <div class="variant-fragment" th:replace="fragments/add-variant :: variant-row(variantIndex=0)"></div>
+                        </div>
+
+                        <!--onclick="addVariant()"-->
+                        <button type="button" class="btn add-variant-btn"
+                                hx-trigger="click"
+                                hx-target="#variants-container"
+                                hx-post="/products/variant-row"
+                                hx-swap="beforeend">
+                            <i class="fas fa-plus"></i>
+                            Add Variant
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn btn-success enhanced">
                         <i class="fas fa-save"></i>
                         Add Product
                     </button>
@@ -77,8 +138,8 @@
             </div>
         </div>
 
-        <div class="card-body">
-            <button class="btn btn-primary btn-lg"
+        <div class="load-products-section">
+            <button class="btn btn-primary enhanced btn-lg"
                     hx-get="/products?currentPage=0&pageSize=10"
                     hx-target="#products-table-container"
                     hx-swap="innerHTML">
@@ -86,25 +147,134 @@
                 Load Products from Database
             </button>
         </div>
-
     </div>
 
     <!-- Products Table Container -->
-    <div class="table-container" id="products-table-container">
-        <div class="empty-state">
+    <div class="table-container enhanced" id="products-table-container">
+        <div class="empty-state enhanced">
             <i class="fas fa-box-open"></i>
             <h3>No Products Loaded</h3>
             <p>Click "Load Products" to fetch products from the database</p>
         </div>
     </div>
-
-
 </div>
 
 <script>
     function showAddForm() {
         const form = document.getElementById('add-product-form');
-        form.classList.add('show');
+        form.style.display = 'block';
+    }
+
+    let variantCount = 1;
+
+
+    function addVariant() {
+        console.log('add variant');
+        const container = document.getElementById('variants-container');
+        console.log(container);
+        // Create a temporary div to hold the new content
+        const tempDiv = document.createElement('div');
+        tempDiv.setAttribute('hx-post', `/products/variant-row?variantIndex=${variantCount}`);
+        tempDiv.setAttribute('hx-trigger', 'load');
+        tempDiv.setAttribute('hx-target', '#variants-container');
+        tempDiv.setAttribute('hx-swap', 'beforeend');
+        console.log(tempDiv);
+        // Append the temporary div (HTMX will replace it with the actual variant row)
+        container.appendChild(tempDiv);
+        console.log(container);
+        // Increment the counter for the next variant
+        variantCount++;
+        console.log(variantCount);
+        htmx.process(tempDiv)
+    }
+
+
+    function removeVariant(button) {
+        const variantRows = document.querySelectorAll('.variant-row');
+        if (variantRows.length > 1) {
+            const row = button.closest('.variant-row');
+
+            // Add removal animation
+            row.style.animation = 'slideOut 0.3s ease-in forwards';
+
+            // Remove after animation
+            setTimeout(() => {
+                row.remove();
+                reindexVariants();
+            }, 300);
+        } else {
+            // Show a subtle shake animation if trying to remove the last variant
+            const row = button.closest('.variant-row');
+            row.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                row.style.animation = '';
+            }, 500);
+        }
+    }
+
+    function reindexVariants() {
+        const variantRows = document.querySelectorAll('.variant-row');
+        variantRows.forEach((row, index) => {
+            row.setAttribute('data-variant-index', index);
+
+            // Update all input names in this row
+            const inputs = row.querySelectorAll('input');
+            inputs.forEach(input => {
+                const name = input.name;
+                if (name && name.includes('variants[')) {
+                    input.name = name.replace(/variants\[\d+\]/, `variants[${index}]`);
+                    if (input.id) {
+                        input.id = input.id.replace(/variants\[\d+\]/, `variants[${index}]`);
+                    }
+                }
+            });
+        });
+
+        // Update variant counter
+        variantCount = variantRows.length;
+    }
+
+    function resetVariantsToOne() {
+        const container = document.getElementById('variants-container');
+        const variants = container.querySelectorAll('.variant-row');
+
+        // Remove all except the first one
+        for (let i = 1; i < variants.length; i++) {
+            variants[i].remove();
+        }
+
+        // Clear the first variant's inputs
+        const firstVariant = variants[0];
+        const inputs = firstVariant.querySelectorAll('input');
+        inputs.forEach(input => input.value = '');
+
+        variantCount = 1;
+    }
+
+    function handleFormSubmit(form, event) {
+        console.log('handleFormSubmit');
+        console.log(event);
+        
+        // Exit if target is add-variant button
+        if (event.target.classList.contains('add-variant-btn')) {
+            console.log('add variant button clicked');
+            return;
+        }
+
+        if (event.detail.xhr.status === 200) {
+            // Show success message
+            const successMessage = document.getElementById('success-message');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+
+            // Reset form
+            form.reset();
+
+            // Reset variants
+            resetVariantsToOne();
+        }
     }
 
     // HTMX event listeners

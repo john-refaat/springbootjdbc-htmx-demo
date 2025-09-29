@@ -122,7 +122,7 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
             .query(Long::class.java)
             .single()
 
-        return product.copy(id = generatedId)
+        return product.copy(id = generatedId, variants = product.variants?.map { it.copy(productId =generatedId) })
     }
 
 
@@ -130,22 +130,22 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
         val updated = jdbcClient.sql(
             """
             UPDATE products 
-            SET title = ?, vendor = ?, product_type = ?
-            WHERE id = ? and external_id = ?
+            SET title = ?, vendor = ?, product_type = ?, external_id = ?
+            WHERE id = ?
         """.trimIndent()
         )
             .param(product.title)
             .param(product.vendor)
             .param(product.productType)
-            .param(product.id)
             .param(product.externalId)
+            .param(product.id)
             .update()
 
         return if (updated == 1) product else null
     }
 
     override fun saveOrUpdateProduct(product: Product): Product? {
-        return if (product.id == 0L || findProductByExternalId(product.externalId) == null)
+        return if (product.id == null)// || findProductByExternalId(product.externalId?:-1) == null)
             saveProduct(product)
         else
             updateProduct(product)
