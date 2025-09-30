@@ -34,13 +34,15 @@
         </div>
 
         <!-- Add Product Form -->
-        <div class="form-section enhanced" id="add-product-form">
-            <div class="form-header enhanced">
-                <h2 class="form-title enhanced">
-                    <i class="fas fa-plus-circle"></i>
-                    Add New Product
-                </h2>
-            </div>
+        <details class="form-section enhanced" id="add-product-form" style="display: none;">
+            <summary>
+                <div class="form-header enhanced" style="width:100%">
+                    <h2 class="form-title enhanced">
+                        <i class="fas fa-plus-circle"></i>
+                        Add New Product
+                    </h2>
+                </div>
+            </summary>
             <div class="form-body enhanced">
                 <div class="success-message" id="success-message">
                     <i class="fas fa-check-circle"></i>
@@ -136,7 +138,7 @@
                     </button>
                 </form>
             </div>
-        </div>
+        </details>
 
         <div class="load-products-section">
             <button class="btn btn-primary enhanced btn-lg"
@@ -166,28 +168,6 @@
     }
 
     let variantCount = 1;
-
-
-    function addVariant() {
-        console.log('add variant');
-        const container = document.getElementById('variants-container');
-        console.log(container);
-        // Create a temporary div to hold the new content
-        const tempDiv = document.createElement('div');
-        tempDiv.setAttribute('hx-post', `/products/variant-row?variantIndex=${variantCount}`);
-        tempDiv.setAttribute('hx-trigger', 'load');
-        tempDiv.setAttribute('hx-target', '#variants-container');
-        tempDiv.setAttribute('hx-swap', 'beforeend');
-        console.log(tempDiv);
-        // Append the temporary div (HTMX will replace it with the actual variant row)
-        container.appendChild(tempDiv);
-        console.log(container);
-        // Increment the counter for the next variant
-        variantCount++;
-        console.log(variantCount);
-        htmx.process(tempDiv)
-    }
-
 
     function removeVariant(button) {
         const variantRows = document.querySelectorAll('.variant-row');
@@ -229,9 +209,6 @@
                 }
             });
         });
-
-        // Update variant counter
-        variantCount = variantRows.length;
     }
 
     function resetVariantsToOne() {
