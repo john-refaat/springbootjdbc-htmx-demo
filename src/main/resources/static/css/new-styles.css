@@ -54,6 +54,56 @@ body {
     z-index: 1;
 }
 
+/* Details/Summary Styling */
+details > summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 2.5rem;
+}
+
+details > summary::-webkit-details-marker {
+    display: none;
+}
+
+details > summary::after {
+    content: '';
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #374151;
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+details[open] > summary::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Special styling for details inside gradient headers */
+.card-header details > summary::after,
+.form-header details > summary::after {
+    border-top-color: white;
+}
+
+/* Ensure form-section details headers don't overflow */
+.form-section details > summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 3rem 1.5rem 2rem;
+    position: relative;
+}
+
+.form-section details > summary::after {
+    border-top-color: white;
+}
+
 /* ================================
    BUTTONS
    ================================ */
@@ -130,6 +180,8 @@ body {
 }
 
 .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -161,6 +213,23 @@ body {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     transform: translateY(-1px);
+}
+
+/* Fix for select dropdowns */
+select.form-control {
+    padding: 0.75rem 1rem;
+    height: auto;
+    min-height: 48px;
+    line-height: normal;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 3rem;
+}
+
+select.form-control option {
+    padding: 0.5rem;
 }
 
 /* ================================
@@ -275,18 +344,33 @@ body {
     gap: 0.5rem;
 }
 
+/* Variant section details styling */
+.variants-section > details > summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 3rem 1.5rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.variants-section > details > summary::after {
+    border-top-color: white;
+}
+
 .variant-card {
     background: #f8f9fa;
-    min-width: 450px;
-    max-width: 600px;
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.2s;
     position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 1.25rem;
-    padding: 1rem;
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .variant-card:hover {
@@ -303,19 +387,19 @@ body {
     animation: slideInVariant 0.4s ease-out;
 }
 
-/* Variant content layout */
+/* Variant content layout - 3 columns */
 .variant-content {
-    flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem 1.5rem;
-    align-items: start;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    width: 100%;
 }
 
 .variant-content > div {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    min-width: 0; /* Prevent overflow */
 }
 
 .variant-content strong {
@@ -326,10 +410,12 @@ body {
     font-weight: 600;
 }
 
-.variant-content span {
+.variant-content span,
+.variant-content input {
     font-size: 0.95rem;
     color: #374151;
     font-weight: 500;
+    word-break: break-word; /* Prevent long text overflow */
 }
 
 /* Variant actions (buttons) - full width at bottom */
@@ -337,11 +423,24 @@ body {
     grid-column: 1 / -1;
     display: flex;
     gap: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
 }
 
 .variant-actions .btn {
     flex: 1;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1024px) {
+    .variant-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .variant-content {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ================================
