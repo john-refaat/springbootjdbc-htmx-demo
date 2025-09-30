@@ -9,7 +9,7 @@
     <!-- Use standard HTML details instead of wa-details -->
     <details class="variant-details">
         <summary th:text="${variant.title}">Variant Title</summary>
-        <div class="variant-content">
+        <div class="variant-card">
             <div class="variant-image-wrapper"
                  th:if="${not #strings.isEmpty(variant.featuredImage?.src)}">
                 <img th:src="${variant.featuredImage.src}"
@@ -17,36 +17,35 @@
                      class="variant-image">
             </div>
 
-            <div class="variant-info">
-                <div class="variant-row">
-                    <span class="variant-label">SKU:</span>
-                    <span class="variant-value" th:text="${variant.sku}">-</span>
+            <div class="variant-content">
+                <div>
+                    <strong>SKU</strong>
+                    <span th:text="${variant.sku}">-</span>
                 </div>
 
-                <div class="variant-row" th:if="${variant.price != null}">
-                    <span class="variant-label">Price:</span>
-                    <span class="variant-value price"
-                          th:text="${'$' + #numbers.formatDecimal(variant.price, 1, 2)}">-</span>
+                <div th:if="${variant.price != null}">
+                    <strong>Price</strong>
+                    <span th:text="${'$' + #numbers.formatDecimal(variant.price, 1, 2)}">-</span>
                 </div>
 
-                <div class="variant-row" th:if="${variant.option1 != null}">
-                    <span class="variant-label">Option 1:</span>
-                    <span class="variant-value" th:text="${variant.option1}">-</span>
+                <div th:if="${variant.option1 != null}">
+                    <strong>Option 1</strong>
+                    <span th:text="${variant.option1}">-</span>
                 </div>
 
-                <div class="variant-row" th:if="${variant.option2 != null}">
-                    <span class="variant-label">Option 2:</span>
-                    <span class="variant-value" th:text="${variant.option2}">-</span>
+                <div th:if="${variant.option2 != null}">
+                    <strong>Option 2</strong>
+                    <span th:text="${variant.option2}">-</span>
                 </div>
 
-                <div class="variant-row" th:if="${variant.option3 != null}">
-                    <span class="variant-label">Option 3:</span>
-                    <span class="variant-value" th:text="${variant.option3}">-</span>
+                <div th:if="${variant.option3 != null}">
+                    <strong>Option 3</strong>
+                    <span th:text="${variant.option3}">-</span>
                 </div>
 
-                <div class="variant-row" th:if="${variant.available != null}">
-                    <span class="variant-label">Available:</span>
-                    <span class="variant-value" th:text="${variant.available}">-</span>
+                <div th:if="${variant.available != null}">
+                    <strong>Available</strong>
+                    <span th:text="${variant.available}">-</span>
                 </div>
 
                 <div class="variant-actions">

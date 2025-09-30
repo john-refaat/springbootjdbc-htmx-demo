@@ -236,16 +236,7 @@ select.form-control.enhanced option {
     gap: 0.5rem;
 }
 
-/* Enhanced Variant Row - NEW GRID STRUCTURE */
-.variant-row {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    transition: all 0.3s ease;
-}
+
 
 .variant-row:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -421,115 +412,6 @@ select.form-control.enhanced option {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
-}
-
-/* Variant Display Components */
-.variant-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--wa-spacing-xs);
-}
-
-.variant-item {
-    display: flex;
-    align-items: center;
-    gap: var(--wa-spacing-sm);
-    padding: var(--wa-spacing-xs) var(--wa-spacing-sm);
-    background: rgba(13, 110, 253, 0.05);
-    border-radius: var(--wa-border-radius);
-    font-size: var(--wa-font-size-sm);
-}
-
-.variant-more {
-    color: var(--wa-color-muted);
-    font-size: var(--wa-font-size-sm);
-    font-style: italic;
-    margin-top: var(--wa-spacing-xs);
-}
-
-.variant-details summary {
-    padding: 1rem;
-    background: #f8f9fa;
-    cursor: pointer;
-    font-weight: 500;
-    color: #333;
-    border-bottom: 1px solid #e9ecef;
-    list-style: none;
-    position: relative;
-}
-
-.variant-details summary::after {
-    content: '▼';
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: transform 0.2s ease;
-    font-size: 0.8rem;
-    color: #666;
-}
-
-.variant-details[open] summary::after {
-    transform: translateY(-50%) rotate(180deg);
-}
-
-.variant-content {
-    display: flex;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: white;
-    min-width: 400px;
-}
-
-.variant-image-wrapper {
-    position: relative;
-    flex: 0 0 75px;
-    width: 75px;
-    overflow: visible;
-    border-radius: var(--wa-border-radius);
-    display: block;
-}
-
-.variant-image {
-    width: 75px !important;
-    height: auto !important;
-    object-fit: cover;
-    border-radius: var(--wa-border-radius);
-    border: 2px solid #e9ecef;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-    display: block;
-    position: relative;
-    z-index: 1;
-    transform-origin: center center;
-}
-
-.variant-image:hover {
-    border-color: var(--wa-color-primary);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-}
-
-.variant-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-width: 250px;
-}
-
-.variant-label {
-    font-weight: 500;
-    color: #6c757d;
-    min-width: 100px;
-    flex-shrink: 0;
-}
-
-.variant-value {
-    color: #2c3e50;
-    flex: 1;
 }
 
 .price {
@@ -712,20 +594,5 @@ select.form-control.enhanced option {
 
     .form-section.enhanced {
         margin: 1rem;
-    }
-
-    .variant-details {
-        min-width: 300px;
-    }
-
-    .variant-content {
-        min-width: 300px;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .variant-image-wrapper {
-        flex: none;
-        align-self: center;
     }
 }

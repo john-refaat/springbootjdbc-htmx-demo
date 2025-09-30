@@ -1,0 +1,488 @@
+/* ================================
+   GLOBAL THEME
+   ================================ */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: #2c3e50;
+}
+
+/* ================================
+   CARDS
+   ================================ */
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.card-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+.card-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+.btn {
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    justify-content: center;
+    min-height: 48px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    width: 100%;
+    font-size: 1.125rem;
+    padding: 1rem 2rem;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+/* ================================
+   FORMS
+   ================================ */
+.form-section {
+    padding: 0;
+    margin: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transform: translateY(10px);
+    opacity: 0;
+    animation: slideUp 0.6s ease-out 0.3s forwards;
+    border: none;
+}
+
+.form-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-bottom: none;
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.form-body {
+    padding: 2rem;
+}
+
+.form-grid {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    line-height: 1.5;
+    min-height: 42px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+/* ================================
+   TABLE
+   ================================ */
+.table-container {
+    margin-top: 2rem;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: none;
+    width: 100%;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto; /* Changed from fixed to allow flexible columns */
+}
+
+.table-container th,
+.table-container td {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #f0f0f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-container th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+.table-container tr:hover td {
+    background: #f9fafb;
+}
+
+.table-container th:last-child,
+.table-container td:last-child {
+    width: 120px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.table-container td .btn {
+    padding: 0.5rem 0.75rem;
+    min-height: auto;
+    font-size: 0.85rem;
+}
+
+/* Column width optimization */
+.table-container th:nth-child(1),
+.table-container td:nth-child(1) {
+    width: 15%; /* Title column */
+    min-width: 150px;
+}
+
+.table-container th:nth-child(2),
+.table-container td:nth-child(2) {
+    width: 10%; /* Vendor column */
+    min-width: 100px;
+}
+
+.table-container th:nth-child(3),
+.table-container td:nth-child(3) {
+    width: 10%; /* Type column */
+    min-width: 100px;
+}
+
+.table-container th:nth-child(4),
+.table-container td:nth-child(4) {
+    width: 50%; /* Variants column - expanded */
+    min-width: 400px;
+    white-space: normal; /* Allow wrapping for variant content */
+    overflow: visible;
+    text-overflow: clip;
+    padding: 1.5rem 1.25rem; /* Extra padding for variant cards */
+}
+
+.table-container th:nth-child(5),
+.table-container td:nth-child(5) {
+    width: 15%; /* Image column */
+    min-width: 120px;
+    text-align: center;
+}
+
+/* ================================
+   VARIANTS SECTION & CARDS
+   ================================ */
+.variants-section {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border: 2px dashed #e2e8f0;
+}
+
+.variants-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.variant-card {
+    background: #f8f9fa;
+    min-width: 450px;
+    max-width: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1rem;
+}
+
+.variant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.variant-row:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.variant-row.new-variant {
+    animation: slideInVariant 0.4s ease-out;
+}
+
+/* Variant content layout */
+.variant-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+    align-items: start;
+}
+
+.variant-content > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.variant-content strong {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.variant-content span {
+    font-size: 0.95rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+/* Variant actions (buttons) - full width at bottom */
+.variant-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.variant-actions .btn {
+    flex: 1;
+}
+
+/* ================================
+   VARIANT IMAGE STYLES
+   ================================ */
+.variant-image-wrapper {
+    position: relative;
+    flex: 0 0 75px;
+    width: 75px;
+    overflow: visible;
+    border-radius: 12px;
+    display: block;
+}
+
+.variant-image {
+    width: 75px !important;
+    height: auto !important;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    z-index: 1;
+    transform-origin: center center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.variant-image:hover {
+    transform: scale(1.2);
+    border-color: #667eea;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+
+/* ================================
+   FEEDBACK STATES
+   ================================ */
+.success-message {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #667eea;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
+
+/* ================================
+   ANIMATIONS & KEYFRAMES
+   ================================ */
+@keyframes shimmer {
+    0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+    50% { transform: translateX(0%) translateY(0%) rotate(180deg); }
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInVariant {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.card-title i,
+.form-title i,
+.variants-title i {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* ================================
+   RESPONSIVENESS
+   ================================ */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .variant-options-row,
+    .variant-details-row,
+    .variant-price-row {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .variant-card {
+        min-width: 100%;
+    }
+
+    .card-title {
+        font-size: 1.75rem;
+    }
+
+    .form-section {
+        margin: 1rem;
+    }
+}
