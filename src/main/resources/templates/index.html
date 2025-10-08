@@ -52,7 +52,8 @@
                       th:object="${newProduct}"
                       hx-target="#products-table-container"
                       hx-swap="innerHTML"
-                      hx-on::after-request="handleFormSubmit(this, event)">
+                      hx-on::after-request="handleFormSubmit(this, event)"
+                      enctype="multipart/form-data">
                     <div class="form-grid">
 
                         <div class="form-group">
@@ -120,7 +121,8 @@
                         </summary>
 
                         <div id="variants-container">
-                            <div class="variant-fragment" th:replace="fragments/add-variant :: variant-row(variantIndex=0)"></div>
+                            <div class="variant-fragment"
+                                 th:replace="fragments/add-variant :: variant-row(variantIndex=0)"></div>
                         </div>
 
                         <!--onclick="addVariant()"-->
@@ -164,6 +166,43 @@
 </div>
 
 <script>
+
+    function previewVariantImage(input, variantIndex) {
+        const previewDiv = document.getElementById('image-preview-' + variantIndex);
+        const img = previewDiv.querySelector('img');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                previewDiv.style.display = 'block';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            previewDiv.style.display = 'none';
+        }
+    }
+
+    function resetVariantImages() {
+        const previewDivs = document.querySelectorAll('[id^="image-preview-"]');
+        previewDivs.forEach(previewDiv => {
+            const img = previewDiv.querySelector('img');
+            if (img) {
+                img.src = '';
+            }
+            previewDiv.style.display = 'none';
+        });
+    }
+
+    function closeVariantDetailsSection() {
+        const variantsSection = document.querySelector('details.variants-section');
+        if (variantsSection) {
+            variantsSection.removeAttribute('open');
+        }
+    }
+
     function showAddForm() {
         const form = document.getElementById('add-product-form');
         form.style.display = 'block';
@@ -243,16 +282,27 @@
         if (event.detail.xhr.status === 200) {
             // Show success message
             const successMessage = document.getElementById('success-message');
+            console.log('success message: '+ successMessage);
             successMessage.style.display = 'block';
             setTimeout(() => {
                 successMessage.style.display = 'none';
-            }, 3000);
+            }, 8000);
 
             // Reset form
             form.reset();
 
+            // Reset variant images
+            resetVariantImages();
+
             // Reset variants
             resetVariantsToOne();
+
+            // Close all details
+            closeVariantDetailsSection();
+            
+            // Scroll to top of page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
         }
     }
 

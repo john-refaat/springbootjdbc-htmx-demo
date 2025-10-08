@@ -1,0 +1,2 @@
+ALTER TABLE images
+    ALTER COLUMN external_id DROP NOT NULL;

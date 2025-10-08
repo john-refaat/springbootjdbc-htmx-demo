@@ -1,6 +1,7 @@
 package dev.js.productsdemo.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -33,29 +34,32 @@ data class ProductDTO(
 )
 
 data class VariantDTO(
-    val uid: Long?,
+    val uid: Long? = null,
     @param:JsonProperty("id")
-    val externalId: Long?,
+    val externalId: Long? = null,
     @param:JsonProperty("product_id")
-    val productId: Long?,
-    val title: String,
-    val option1: String?,
-    val option2: String?,
-    val option3: String?,
-    val sku: String,
-    val price: BigDecimal?,
+    val productId: Long? = null,
+    val title: String = "",
+    val option1: String? = null,
+    val option2: String? = null,
+    val option3: String? = null,
+    val sku: String = "",
+    val price: BigDecimal? = null,
     val available: Boolean = true,
     @param:JsonProperty("featured_image")
-    val featuredImage: ImageDTO?,
+    val featuredImage: ImageDTO? = null,
     @param:JsonProperty("created_at")
-    val createdAt: OffsetDateTime?
+    val createdAt: OffsetDateTime? = null,
+    val imageFile: MultipartFile? = null
 )
 
 data class ImageDTO(
-    val uid: Long?,
+    val uid: Long? = null,
     @param:JsonProperty("id")
-    val externalId: Long,
-    val src: String,
+    val externalId: Long? = null,
+    val src: String? = null,
     @param:JsonProperty("created_at")
-    val createdAt: OffsetDateTime?
+    val createdAt: OffsetDateTime? = null,
+    val imageFile: MultipartFile? = null
+
 )

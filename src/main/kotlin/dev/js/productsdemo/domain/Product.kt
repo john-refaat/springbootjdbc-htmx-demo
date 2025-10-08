@@ -1,5 +1,6 @@
 package dev.js.productsdemo.domain
 
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -26,12 +27,13 @@ data class Variant(
     val sku: String,
     val price: BigDecimal?,
     val available: Boolean = true,
-    val createdAt: OffsetDateTime? = null
+    val createdAt: OffsetDateTime? = null,
+    val imageFile: MultipartFile? = null
 )
 
 data class Image(
     val id: Long? = null,
-    val externalId: Long,
-    val src: String,
+    val externalId: Long? = null,
+    val src: String?,
     val createdAt: OffsetDateTime? = null
 )

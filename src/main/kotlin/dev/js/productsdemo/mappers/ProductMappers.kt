@@ -30,7 +30,8 @@ fun Variant.toVariantDTO(): VariantDTO {
         price = this.price,
         available = this.available,
         createdAt = this.createdAt,
-        featuredImage = this.featuredImage?.toImageDTO()
+        featuredImage = this.featuredImage?.toImageDTO(),
+        imageFile = this.imageFile
     )
 }
 
@@ -64,7 +65,8 @@ fun VariantDTO.toVariant(): Variant = Variant(
     sku = this.sku,
     price = this.price,
     available = this.available,
-    createdAt = this.createdAt
+    createdAt = this.createdAt,
+    imageFile = this.imageFile
 )
 
 fun ProductDTO.toProduct(): Product {

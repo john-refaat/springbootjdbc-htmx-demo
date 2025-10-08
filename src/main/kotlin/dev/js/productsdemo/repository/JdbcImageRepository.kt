@@ -79,6 +79,7 @@ class JdbcImageRepository(private val jdbcClient: JdbcClient) : ImageRepository 
             .single()
     }
 
+
     override fun deleteImage(id: Long) {
         val sql = "DELETE FROM images WHERE id = ?"
         jdbcClient.sql(sql)

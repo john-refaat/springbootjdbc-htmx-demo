@@ -3,6 +3,7 @@ package dev.js.productsdemo.service
 import dev.js.productsdemo.domain.Product
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductsResponse
+import org.springframework.web.multipart.MultipartFile
 
 interface ProductService {
     fun getAllProductsWithDetails(page: Int, pageSize: Int?): ProductsResponse

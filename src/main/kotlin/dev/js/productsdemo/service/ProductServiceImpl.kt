@@ -8,17 +8,20 @@ import dev.js.productsdemo.mappers.toVariant
 import dev.js.productsdemo.mappers.toVariantDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductsResponse
+import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.repository.ImageRepository
 import dev.js.productsdemo.repository.ProductRepository
 import dev.js.productsdemo.repository.VariantRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import kotlin.math.ceil
 
 @Service
 class ProductServiceImpl(
 
+    private val imageService: ImageService,
     private val productRepository: ProductRepository,
     private val variantRepository: VariantRepository,
     private val imageRepository: ImageRepository,
@@ -28,41 +31,55 @@ class ProductServiceImpl(
 
     // Now just delegates to the optimized repository method
     override fun getAllProductsWithDetails(page: Int, pageSize: Int?): ProductsResponse {
+        logger.info("Fetching all products with details for page $page with size $pageSize")
         val count = productRepository.countAllProducts()
         val offset = if (pageSize != null) page * pageSize else null
-        return ProductsResponse(
+        val response = ProductsResponse(
             productRepository.findAllProductsWithDetails(pageSize, offset)
                 .map { it.toProductDTO() },
             currentPage = page,
             totalPages = pageSize?.run { ceil(count.toDouble() / this).toLong() },
             pageSize = pageSize
         )
+        logger.info("Successfully retrieved ${response.products.size} products")
+        return response
     }
 
+    @Transactional
     override fun saveProduct(productDTO: ProductDTO): ProductDTO {
+        logger.info("Saving product: ${productDTO.title}")
         val productDTO = productRepository.saveProduct(productDTO.toProduct()).toProductDTO()
+        logger.info("Product saved with ID: ${productDTO.uid}")
 
-        val variantDTOs = productDTO.variants.map { variantDTO -> variantDTO.toVariant() }
-            .map { variant ->
-                val savedFeaturedImage = variant.featuredImage?.let { imageRepository.saveImage(it) }
-                variantRepository.saveOrUpdateVariant(variant.copy(featuredImage = savedFeaturedImage))
-            }.mapNotNull { variant ->
-                variant?.toVariantDTO()
+        val savedVariants = mutableListOf<VariantDTO>()
+        productDTO.variants.forEachIndexed { index, variantDTO ->
+            logger.info("Saving image for variant (${variantDTO.title})")
+            val savedImage = imageService.saveImage(variantDTO)
+
+            variantRepository.saveOrUpdateVariant(variantDTO.copy(featuredImage = savedImage).toVariant())
+                ?.apply {
+                    savedVariants.add(this.toVariantDTO())
+                }
+
             }
-        return productDTO.copy(variants = variantDTOs.toMutableList())
+        return productDTO.copy(variants = savedVariants)
     }
 
     override fun getProductById(id: Long): ProductDTO {
+        logger.info("Fetching product with ID: $id")
         return productRepository.findProductById(id)
             ?.toProductDTO()
-            ?: throw RuntimeException("Product $id not found")
+            ?.also { logger.info("Successfully retrieved product: ${it.title}") }
+            ?: throw RuntimeException("Product $id not found").also { logger.error("Product $id not found") }
     }
 
 
     override fun getAllProducts(page: Int, pageSize: Int?): ProductsResponse {
+        logger.info("Fetching all products for page $page with size $pageSize")
         val count = productRepository.countAllProducts()
         val offset = if (pageSize != null) page * pageSize else null
         val products = productRepository.findAllProducts(pageSize, offset)
+        logger.info("Found ${products.size} products")
         return ProductsResponse(
             products = products.map { it.toProductDTO() },
             currentPage = page,

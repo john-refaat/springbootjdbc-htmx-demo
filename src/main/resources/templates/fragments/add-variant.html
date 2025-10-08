@@ -93,6 +93,23 @@
                         <option value="false">No</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i>
+                        Variant Image
+                    </label>
+                    <!--name="variantImages"-->
+<!--                          th:name="'variants[' + ${variantIndex} + '].imageFile'"
+-->
+                   <input type="file"
+                          th:field="*{product.variants[__${variantIndex}__].imageFile}"
+                          class="form-control"
+                          accept="image/*"
+                          th:onchange="'previewVariantImage(this, ' + ${variantIndex} + ')'">
+                    <div class="image-preview" th:id="'image-preview-' + ${variantIndex}" style="display: none;">
+                        <img src="" alt="Preview" style="max-width: 100px; max-height: 100px; margin-top: 0.5rem; border-radius: 8px;">
+                    </div>
+                </div>
 
                 <div class="variant-actions">
                     <button type="button" class="btn btn-danger enhanced" onclick="removeVariant(this)">
