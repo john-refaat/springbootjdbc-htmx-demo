@@ -33,7 +33,10 @@ class ImageServiceImpl(
             logger.error("Image file is null for variant: ${variantDTO.title}")
             throw IllegalArgumentException("Image file cannot be null")
         }
-        val filename = generateUniqueFilename(variantDTO.title, variantDTO.imageFile.originalFilename)
+        val filename = generateUniqueFilename(
+            variantDTO.title.replace(Regex("[\\s/\\\\<>:\"|?*]"), "_"),
+            variantDTO.imageFile.originalFilename
+        )
 
         val directory = File("$uploadDir/${variantDTO.productId}")
         if (!directory.exists()) {
@@ -62,6 +65,10 @@ class ImageServiceImpl(
         variantDTO: VariantDTO
     ): ImageDTO {
         logger.info("Saving image for variant: ${variantDTO.title}")
+        if (variantDTO.featuredImage == null && variantDTO.imageFile == null) {
+            logger.error("Tried to Save Image but no Image attached to variant")
+            throw IllegalArgumentException("No Image Attached")
+        }
 
         val savedImage = createAndSaveImage(variantDTO)
 
@@ -72,13 +79,15 @@ class ImageServiceImpl(
         return if (variantDTO.featuredImage != null) {
             // Use existing image data if available
             imageRepository.saveImage(variantDTO.featuredImage.toImage())
-        } else {
+        } else if (variantDTO.imageFile != null) {
             // Generate and store a new image
             val imagePath = storeImageFile(variantDTO)
             imageRepository.saveImage(Image(
                 src = imagePath,
                 createdAt = OffsetDateTime.now()
             ))
+        } else {
+            throw IllegalArgumentException("Tried to save image, but no image found.")
         }
     }
     override fun findImageById(id: Long): ImageDTO? {
