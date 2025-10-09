@@ -58,7 +58,9 @@ class ProductServiceImpl(
             !variant.title.isBlank() || variant.imageFile != null
         }.forEach { variantDTO ->
             logger.info("Saving image for variant (${variantDTO.title})")
-            val savedImage = imageService.saveImage(variantDTO)
+            val savedImage = if (variantDTO.featuredImage != null || variantDTO.imageFile != null)
+                imageService.saveImage(variantDTO)
+            else null
 
             variantRepository.saveOrUpdateVariant(variantDTO.copy(featuredImage = savedImage).toVariant())
                 ?.apply {

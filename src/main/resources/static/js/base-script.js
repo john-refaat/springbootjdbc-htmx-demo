@@ -39,8 +39,6 @@
         form.style.display = 'block';
     }
 
-    let variantCount = 1;
-
     function removeVariant(button) {
         const variantRows = document.querySelectorAll('.variant-row');
         if (variantRows.length > 1) {
@@ -58,6 +56,8 @@
                     input.disabled = true; // Disable so it won't be submitted
                 }
             });
+
+            decrementVariantCount();
 
             // Remove after animation
             setTimeout(() => {
@@ -92,7 +92,8 @@
             });
         });
     }
-
+    
+    
     function resetVariantsToOne() {
         const container = document.getElementById('variants-container');
         const variants = container.querySelectorAll('.variant-row');
@@ -106,8 +107,18 @@
         const firstVariant = variants[0];
         const inputs = firstVariant.querySelectorAll('input');
         inputs.forEach(input => input.value = '');
+        resetVariantCount();
+    }
+    
+    function resetVariantCount() {
+        const variantCount = document.getElementById("variantCount");
+        variantCount.value = 1;
+    }
 
-        variantCount = 1;
+     function decrementVariantCount() {
+        const variantCount = document.getElementById("variantCount");
+        variantCount.value = variantCount.value - 1;
+        console.log('variantCount= '+ variantCount.value)
     }
 
     function handleFormSubmit(form, event) {

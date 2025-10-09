@@ -1,6 +1,7 @@
 package dev.js.productsdemo.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.micrometer.core.annotation.Counted
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.Instant
@@ -9,7 +10,8 @@ import java.time.OffsetDateTime
 
 data class ProductRequest(
     val product: ProductDTO,
-    val pageSize: Int = 5
+    var pageSize: Int = 5,
+    var variantCount: Int = 1
 )
 
 data class ProductsResponse(

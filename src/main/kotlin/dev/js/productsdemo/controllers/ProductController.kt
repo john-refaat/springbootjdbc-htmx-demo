@@ -4,7 +4,6 @@ import dev.js.productsdemo.model.ImageDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductRequest
 import dev.js.productsdemo.model.VariantDTO
-import dev.js.productsdemo.repository.ImageRepository
 import dev.js.productsdemo.service.ProductService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest
 import java.io.File
-import java.time.Instant
 
 @Controller
 @RequestMapping("/products")
@@ -44,10 +41,11 @@ class ProductController(private val productService: ProductService) {
     @PostMapping("/variant-row")
     fun getVariantRow(@ModelAttribute newProduct: ProductRequest, model: Model): String {
         logger.info("Adding New Variant Row: {}", newProduct)
+        newProduct.variantCount += 1
         newProduct.product.variants.add(VariantDTO(featuredImage = ImageDTO()))
         model.addAttribute("variantIndex", newProduct.product.variants.size - 1)
         model.addAttribute("newProduct", newProduct)
-
+        model.addAttribute("variantCount", newProduct.variantCount)
         return "fragments/add-variant :: variant-row"
     }
 
@@ -63,7 +61,9 @@ class ProductController(private val productService: ProductService) {
         model: Model
     ): String {
         logger.info("Adding product: {}", request)
-
+        val filteredVariants = request.product.variants.take(request.variantCount)
+        request.product.variants.clear()
+        request.product.variants.addAll(filteredVariants)
         val savedProduct = productService.saveProduct(productDTO = request.product)
         logger.info("Saved product: {}", savedProduct)
         // Return updated table

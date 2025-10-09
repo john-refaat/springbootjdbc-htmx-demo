@@ -6,6 +6,13 @@
 </head>
 <body>
 <div th:fragment="variant-row(variantIndex)" th:object="${newProduct}">
+
+    <input type="hidden"
+           id="variantCount"
+           name="variantCount"
+           th:value="${variantCount}"
+           hx-swap-oob="true" />
+
     <div class="variant-row new-variant" th:attr="data-variant-index=${variantIndex}">
 
         <div class="variant-card">
