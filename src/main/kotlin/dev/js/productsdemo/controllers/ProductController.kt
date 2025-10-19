@@ -5,10 +5,13 @@ import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductRequest
 import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.service.ProductService
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
@@ -27,28 +30,22 @@ class ProductController(private val productService: ProductService) {
         logger.info("Loading products with page: {}, size: {}", currentPage, pageSize)
         val productsWithDetails = productService.getAllProductsWithDetails(currentPage?:0, pageSize)
         model.addAttribute("productsWithDetails", productsWithDetails)
-        model.addAttribute("newProduct", ProductRequest(
-            product = ProductDTO(variants =
-                mutableListOf(VariantDTO(
-                    featuredImage = ImageDTO()
-                ))
-            )
-        ))
-
         return "fragments/product-table :: product-table"
     }
 
-    @PostMapping("/variant-row")
-    fun getVariantRow(@ModelAttribute newProduct: ProductRequest, model: Model): String {
+   /* @PostMapping("/variant-row")
+    fun getVariantRow(@ModelAttribute("newProduct") newProduct: ProductRequest, model: Model): String {
         logger.info("Adding New Variant Row: {}", newProduct)
         newProduct.variantCount += 1
-        newProduct.product.variants.add(VariantDTO(featuredImage = ImageDTO()))
-        model.addAttribute("variantIndex", newProduct.product.variants.size - 1)
-        model.addAttribute("newProduct", newProduct)
+        newProduct.product.variants = listOf(
+            VariantDTO(featuredImage = ImageDTO()),
+            VariantDTO(featuredImage = ImageDTO()),
+            VariantDTO(featuredImage = ImageDTO()))
+        model.addAttribute("variantIndex", newProduct.variantCount - 1)
         model.addAttribute("variantCount", newProduct.variantCount)
         return "fragments/add-variant :: variant-row"
     }
-
+*/
 //
 //    @RequestParam title: String,
 //    @RequestParam(required = false) vendor: String?,
@@ -57,20 +54,46 @@ class ProductController(private val productService: ProductService) {
 
     @PostMapping("")
     fun addProduct(
-        @ModelAttribute request: ProductRequest,
-        model: Model
+        @Valid @ModelAttribute("newProduct") newProduct: ProductRequest,
+        bindingResult: BindingResult,
+        @RequestParam("variantVisible[0]", required = false, defaultValue = "true") visible0: Boolean,
+        @RequestParam("variantVisible[1]", required = false, defaultValue = "false") visible1: Boolean,
+        @RequestParam("variantVisible[2]", required = false, defaultValue = "false") visible2: Boolean,
+        model: Model,
+        response: HttpServletResponse  // Add this
     ): String {
-        logger.info("Adding product: {}", request)
-        val filteredVariants = request.product.variants.take(request.variantCount)
-        request.product.variants.clear()
-        request.product.variants.addAll(filteredVariants)
-        val savedProduct = productService.saveProduct(productDTO = request.product)
+        if (bindingResult.hasErrors()) {
+            response.status = HttpServletResponse.SC_BAD_REQUEST
+
+            // Pass visibility state back to the view
+            val visibleVariants = listOf(visible0, visible1, visible2)
+            model.addAttribute("visibleVariants", visibleVariants)
+
+            return "fragments/form :: product-form"
+        }
+
+        logger.info("Adding product: {}", newProduct)
+        // Process only visible variants
+        val visibleVariants = listOf(visible0, visible1, visible2)
+        val activeVariants = newProduct.product.variants.filterIndexed { index, _ ->
+            index < 3 && visibleVariants.getOrElse(index) { false }
+        }
+        val savedProduct = productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
         logger.info("Saved product: {}", savedProduct)
         // Return updated table
-        val productsWithDetails = productService.getAllProductsWithDetails(0, request.pageSize)
+       // val productsWithDetails = productService.getAllProductsWithDetails(0, newProduct.pageSize)
 
-        model.addAttribute("productsWithDetails", productsWithDetails)
-        return "fragments/product-table"
+        //model.addAttribute("productsWithDetails", productsWithDetails)
+        model.addAttribute("visibleVariants", listOf(true, false, false))
+        model.addAttribute("newProduct", ProductRequest(
+            product = ProductDTO(variants = listOf(
+                VariantDTO(featuredImage = ImageDTO()),
+                VariantDTO(featuredImage = ImageDTO()),
+                VariantDTO(featuredImage = ImageDTO()))
+            )
+        ))
+        model.addAttribute("success", true)
+        return "fragments/form :: product-form"
     }
 
 }
@@ -86,11 +109,12 @@ class IndexController {
                 title = "",
                 vendor = "",
                 productType = "",
-                variants = mutableListOf(
-                    VariantDTO(featuredImage = ImageDTO())
-                )
+                variants = listOf(
+                    VariantDTO(featuredImage = ImageDTO()),
+                    VariantDTO(featuredImage = ImageDTO()),
+                    VariantDTO(featuredImage = ImageDTO()))
             ),
-            pageSize = 10
+            pageSize = 5
         ))
         return "index"
     }

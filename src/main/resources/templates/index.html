@@ -16,9 +16,11 @@
     <link rel="stylesheet" href="/css/new-styles.css"/>
 
     <!-- HTMX -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/response-targets.js"></script>
+
 </head>
-<body>
+<body hx-ext="response-targets">
 <div class="container">
     <!-- Header Card -->
     <div class="card">
@@ -32,124 +34,14 @@
             </p>
         </div>
 
-        <!-- Add Product Form -->
-        <details class="form-section" id="add-product-form">
-            <summary>
-                <div class="form-header" style="width:100%">
-                    <h2 class="form-title">
-                        <i class="fas fa-plus-circle"></i>
-                        Add New Product
-                    </h2>
-                </div>
-            </summary>
-            <div class="form-body">
-                <div class="success-message" id="success-message">
-                    <i class="fas fa-check-circle"></i>
-                    Product added successfully!
-                </div>
+        <div class="form-section">
+            <div th:replace="fragments/form :: product-form"></div>
+        </div>
 
-                <form hx-post="/products"
-                      th:object="${newProduct}"
-                      hx-target="#products-table-container"
-                      hx-swap="innerHTML"
-                      hx-on::after-request="handleFormSubmit(this, event)"
-                      enctype="multipart/form-data">
-                    <div class="form-grid">
-                        <input type="hidden" id="variantCount" name="variantCount" th:field="*{variantCount}"
-                               th:value="${variantCount}" hx-swap-oob="true"/>
-
-                        <div class="form-group">
-                            <label for="title" class="form-label">
-                                <i class="fas fa-tag"></i>
-                                Product Title *
-                            </label>
-                            <input type="text"
-                                   id="title"
-                                   name="title"
-                                   th:field="*{product.title}"
-                                   class="form-control"
-                                   required
-                                   placeholder="Enter product title">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="vendor" class="form-label">
-                                <i class="fas fa-building"></i>
-                                Vendor/Brand
-                            </label>
-                            <input type="text"
-                                   id="vendor"
-                                   name="vendor"
-                                   th:field="*{product.vendor}"
-                                   class="form-control"
-                                   placeholder="Enter vendor name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="product_type" class="form-label">
-                                <i class="fas fa-layer-group"></i>
-                                Product Type
-                            </label>
-                            <input type="text"
-                                   id="product_type"
-                                   name="productType"
-                                   th:field="*{product.productType}"
-                                   class="form-control"
-                                   placeholder="e.g., Clothing, Electronics">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="external_id" class="form-label">
-                                <i class="fas fa-external-link-alt"></i>
-                                External ID
-                            </label>
-                            <input type="text"
-                                   id="external_id"
-                                   name="external_id"
-                                   th:field="*{product.externalId}"
-                                   class="form-control"
-                                   placeholder="External identifier">
-                        </div>
-                    </div>
-
-                    <details class="variants-section">
-                        <summary>
-                            <div class="variants-header">
-                                <h3 class="variants-title">
-                                    <i class="fas fa-cubes"></i>
-                                    Product Variants
-                                </h3>
-                            </div>
-                        </summary>
-
-                        <div id="variants-container">
-                            <div class="variant-fragment"
-                                 th:replace="fragments/add-variant :: variant-row(variantIndex=0)"></div>
-                        </div>
-
-                        <!--onclick="addVariant()"-->
-                        <button type="button" class="btn add-variant-btn"
-                                hx-trigger="click"
-                                hx-target="#variants-container"
-                                hx-post="/products/variant-row"
-                                hx-swap="beforeend"
-                                hx-encoding="multipart/form-data">
-                            <i class="fas fa-plus"></i>
-                            Add Variant
-                        </button>
-                    </details>
-
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save"></i>
-                        Add Product
-                    </button>
-                </form>
-            </div>
-        </details>
 
         <div class="load-products-section" style="display: flex; justify-content: center; align-items: center;">
             <button class="btn btn-primary btn-lg"
-                    hx-get="/products?currentPage=0&pageSize=10"
+                    hx-get="/products?currentPage=0&pageSize=5"
                     hx-target="#products-table-container"
                     hx-swap="innerHTML">
                 <i class="fas fa-download"></i>
@@ -157,14 +49,9 @@
             </button>
         </div>
     </div>
-
+    <!--<div id="content-container"></div>-->
     <!-- Products Table Container -->
-    <div class="table-container" id="products-table-container">
-        <div class="empty-state">
-            <i class="fas fa-box-open"></i>
-            <h3>No Products Loaded</h3>
-            <p>Click "Load Products" to fetch products from the database</p>
-        </div>
+    <div  hx-get="/products?currentPage=0&pageSize=5" class="table-container" id="products-table-container" hx-trigger="refresh-products from:body">
     </div>
 </div>
 

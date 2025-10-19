@@ -1,6 +1,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="product-table">
+<div id="empty-product-table" th:fragment="empty-product-table">
+    <div class="empty-state">
+        <i class="fas fa-box-open"></i>
+        <h3>No Products Loaded</h3>
+        <p>Click "Load Products" to fetch products from the database</p>
+    </div>
+</div>
+
+<div id="product-table" th:fragment="product-table">
     <div class="table-responsive">
         <table class="table">
             <thead>

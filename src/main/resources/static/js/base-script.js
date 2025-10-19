@@ -1,5 +1,5 @@
   function previewVariantImage(input, variantIndex) {
-        const previewDiv = document.getElementById('image-preview-' + variantIndex);
+        const previewDiv = document.getElementById('variant_' + variantIndex + 'imagePreview');
         const img = previewDiv.querySelector('img');
 
         if (input.files && input.files[0]) {
@@ -28,6 +28,7 @@
     }
 
     function closeVariantDetailsSection() {
+        console.log('closeVariantDetailsSection');
         const variantsSection = document.querySelector('details.variants-section');
         if (variantsSection) {
             variantsSection.removeAttribute('open');
@@ -39,137 +40,185 @@
         form.style.display = 'block';
     }
 
-    function removeVariant(button) {
-        const variantRows = document.querySelectorAll('.variant-row');
-        if (variantRows.length > 1) {
-            const row = button.closest('.variant-row');
 
-            // Add removal animation
-            row.style.animation = 'slideOut 0.3s ease-in forwards';
+   function addVariant() {
+       const variantCount = document.getElementById("variantCount");
+       const currentCount = parseInt(variantCount.value);
 
-             // Clear inputs to ensure they don't get submitted
-            const inputs = row.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.value = '';
-                // For file inputs, we need special handling
-                if (input.type === 'file') {
-                    input.disabled = true; // Disable so it won't be submitted
-                }
-            });
+       if (currentCount < 3) {
+           // Find first invisible variant
+           for (let i = 0; i < 3; i++) {
+               const checkbox = document.getElementById(`variantVisible${i}`);
+               if (checkbox && !checkbox.checked) {
+                   // Make this variant visible
+                   checkbox.checked = true;
+                   checkbox.setAttribute('checked', 'checked');
 
-            decrementVariantCount();
+                   // Show the row
+                   const variantDiv = document.getElementById('variant_' + i);
+                   if (variantDiv) {
+                       variantDiv.style.display = 'block';
 
-            // Remove after animation
-            setTimeout(() => {
-                row.remove();
-                reindexVariants();
-            }, 300);
+                       // Enable inputs
+                       const inputs = variantDiv.querySelectorAll('input, select');
+                       inputs.forEach(input => input.disabled = false);
+
+                       // Increment count
+                       variantCount.value = currentCount + 1;
+
+                       // Update button state
+                       if (currentCount + 1 >= 3) {
+                           document.querySelector('.add-variant-btn').disabled = true;
+                       }
+
+                       break; // Found one, exit loop
+                   }
+               }
+           }
+       }
+   }
+
+   function removeVariant(button) {
+       const variantCount = document.getElementById("variantCount");
+       const currentCount = parseInt(variantCount.value);
+
+       if (currentCount > 1) { // Keep at least one
+           const row = button.closest('.variant-row');
+           const rowIndex = row.getAttribute('data-variant-index');
+           console.log('rowIndex:', rowIndex, 'row:', row);
+           const variantDiv = document.getElementById('variant_' + rowIndex);
+           if (!variantDiv) {
+                return;
+           }
+
+           // Mark as invisible
+           const checkbox = document.getElementById('variantVisible' + rowIndex);
+           if (checkbox) {
+               checkbox.checked = false;
+               checkbox.removeAttribute('checked'); // Remove the HTML attribute
+           }
+
+           // Add animation
+           variantDiv.style.animation = 'slideOut 0.3s ease-in forwards';
+
+           // Clear and disable inputs
+           const inputs = row.querySelectorAll('input, select');
+           inputs.forEach(input => {
+               input.value = '';
+               input.disabled = true;
+           });
+
+           // Hide after animation
+           setTimeout(() => {
+               variantDiv.style.display = 'none';
+
+               // Enable add button if needed
+               document.querySelector('.add-variant-btn').disabled = false;
+
+               // Decrement count
+               variantCount.value = currentCount - 1;
+           }, 300);
+       } else {
+           // Show shake animation
+           const row = button.closest('.variant-row');
+           row.style.animation = 'shake 0.5s ease-in-out';
+           setTimeout(() => {
+               row.style.animation = '';
+           }, 500);
+       }
+   }
+
+function initializeVariantRows() {
+    console.log('initializeVariantRows');
+    // Count visible variants
+    let visibleCount = 0;
+    for (let i = 0; i < 3; i++) {
+        const checkbox = document.getElementById(`variantVisible${i}`);
+        if (checkbox && checkbox.checked) {
+            visibleCount++;
+
+            // Show the variant
+            const variantDiv = document.getElementById('variant_' + i);
+            if (variantDiv) {
+                variantDiv.style.display = 'block';
+
+                // Enable inputs
+                const inputs = variantDiv.querySelectorAll('input, select');
+                inputs.forEach(input => input.disabled = false);
+            }
         } else {
-            // Show a subtle shake animation if trying to remove the last variant
-            const row = button.closest('.variant-row');
-            row.style.animation = 'shake 0.5s ease-in-out';
-            setTimeout(() => {
-                row.style.animation = '';
-            }, 500);
+            // Hide the variant
+            const variantDiv = document.getElementById('variant_' + i);
+            if (variantDiv) {
+                variantDiv.style.display = 'none';
+
+                // Disable inputs
+                const inputs = variantDiv.querySelectorAll('input, select');
+                inputs.forEach(input => input.disabled = true);
+            }
         }
     }
 
-    function reindexVariants() {
-        const variantRows = document.querySelectorAll('.variant-row');
-        variantRows.forEach((row, index) => {
-            row.setAttribute('data-variant-index', index);
-
-            // Update all input names in this row
-            const inputs = row.querySelectorAll('input');
-            inputs.forEach(input => {
-                const name = input.name;
-                if (name && name.includes('variants[')) {
-                    input.name = name.replace(/variants\[\d+\]/, `variants[${index}]`);
-                    if (input.id) {
-                        input.id = input.id.replace(/variants\[\d+\]/, `variants[${index}]`);
-                    }
-                }
-            });
-        });
-    }
-    
-    
-    function resetVariantsToOne() {
-        const container = document.getElementById('variants-container');
-        const variants = container.querySelectorAll('.variant-row');
-
-        // Remove all except the first one
-        for (let i = 1; i < variants.length; i++) {
-            variants[i].remove();
-        }
-
-        // Clear the first variant's inputs
-        const firstVariant = variants[0];
-        const inputs = firstVariant.querySelectorAll('input');
-        inputs.forEach(input => input.value = '');
-        resetVariantCount();
-    }
-    
-    function resetVariantCount() {
-        const variantCount = document.getElementById("variantCount");
-        variantCount.value = 1;
+    // Update count and button state
+    const variantCount = document.getElementById("variantCount");
+    if (variantCount) {
+        variantCount.value = visibleCount;
     }
 
-     function decrementVariantCount() {
-        const variantCount = document.getElementById("variantCount");
-        variantCount.value = variantCount.value - 1;
-        console.log('variantCount= '+ variantCount.value)
+    const addButton = document.querySelector('.add-variant-btn');
+    if (addButton) {
+        addButton.disabled = visibleCount >= 3;
     }
+}
 
-    function handleFormSubmit(form, event) {
-        console.log('handleFormSubmit');
-        console.log(event);
-
-        // Exit if target is add-variant button
-        if (event.target.classList.contains('add-variant-btn')) {
-            console.log('add variant button clicked');
-            return;
-        }
-
-        if (event.detail.xhr.status === 200) {
-            // Show success message
-            const successMessage = document.getElementById('success-message');
-            console.log('success message: '+ successMessage);
-            successMessage.style.display = 'block';
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 8000);
-
-            // Reset form
-            form.reset();
-
-            // Reset variant images
-            resetVariantImages();
-
-            // Reset variants
-            resetVariantsToOne();
-
-            // Close all details
-            closeVariantDetailsSection();
-
-            // Scroll to top of page
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        }
+// Run on page load and after HTMX swaps
+document.addEventListener('DOMContentLoaded', initializeVariantRows);
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+    if (evt.target.id === 'product-form' || evt.target.closest('#product-form')) {
+        initializeVariantRows();
     }
+});
 
-    // HTMX event listeners
-    document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        evt.target.classList.add('loading');
-    });
 
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-        evt.target.classList.remove('loading');
-    });
+function handleFormSubmit(form, event) {
+    console.log('handleFormSubmit');
+    console.log(event);
 
-    // Auto-show form after successful product load
-    document.body.addEventListener('htmx:afterSwap', function(evt) {
-        if (evt.target.id === 'products-table-container' && evt.detail.xhr.status === 200) {
-            showAddForm();
-        }
-    });
+    // Exit if target is add-variant button
+    if (event.target.classList.contains('add-variant-btn')) {
+        console.log('add variant button clicked');
+        return;
+    }
+    console.log(event.detail.xhr.status)
+    htmx.trigger('body', 'refresh-products');
+
+    // Show success message
+    //const successMessage = document.getElementById('success-container');
+    //console.log('success message: '+ successMessage);
+    //successMessage.style.display = 'block';
+
+    // Show success dialog
+    const dialog = document.querySelector('.dialog-light-dismiss');
+    dialog.open = true;
+}
+
+
+// HTMX event listeners
+document.body.addEventListener('htmx:beforeRequest', function(evt) {
+    evt.target.classList.add('loading');
+});
+
+document.body.addEventListener('htmx:afterRequest', function(evt) {
+    evt.target.classList.remove('loading');
+});
+
+// Auto-show form after successful product load
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+    if (evt.target.id === 'products-table-container' && evt.detail.xhr.status === 200) {
+        showAddForm();
+    }
+    if (evt.target.id === 'product-form' && evt.detail.xhr.status === 200) {
+        console.log('>>> add product form submitted');
+        handleFormSubmit(evt.target, evt);
+    }
+});

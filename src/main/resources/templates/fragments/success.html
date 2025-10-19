@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Success Message Fragment -->
+<div th:fragment="success-message" class="success-message" style="display: block; margin-bottom: 1rem;">
+    <i class="fas fa-check-circle"></i>
+    <span th:text="${successMessage ?: 'Product created successfully!'}">Success!</span>
+</div>
+</body>
+</html>

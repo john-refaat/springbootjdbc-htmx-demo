@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 
 data class Product(
     val id: Long? = null,
-    val externalId: Long,
+    val externalId: Long?,
     val title: String,
     val vendor: String?,
     val productType: String?,

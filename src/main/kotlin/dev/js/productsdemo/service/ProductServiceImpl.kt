@@ -52,10 +52,9 @@ class ProductServiceImpl(
         logger.info("Product saved with ID: ${productDTO.uid}")
 
         val savedVariants = mutableListOf<VariantDTO>()
-        productDTO.variants.filter {
-            // This will handle cases where variants were removed in the UI
-                variant ->
-            !variant.title.isBlank() || variant.imageFile != null
+        productDTO.variants.filterNot {
+                // This will handle cases where variants were removed in the UI
+                variant -> variant.title.isBlank()
         }.forEach { variantDTO ->
             logger.info("Saving image for variant (${variantDTO.title})")
             val savedImage = if (variantDTO.featuredImage != null || variantDTO.imageFile != null)

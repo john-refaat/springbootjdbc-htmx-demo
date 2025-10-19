@@ -521,6 +521,17 @@ select.form-control option {
     animation: spin 1s ease-in-out infinite;
 }
 
+.error {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.error-input {
+    border-color: #d32f2f;
+}
+
+
 /* ================================
    ANIMATIONS & KEYFRAMES
    ================================ */

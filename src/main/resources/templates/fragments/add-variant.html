@@ -5,124 +5,166 @@
     <title>Add Variant</title>
 </head>
 <body>
-<div th:fragment="variant-row(variantIndex)" th:object="${newProduct}">
+<div th:fragment="variant-row(variantIndex)"
+     th:object="${newProduct}"
+     class="variant-row new-variant" th:attr="data-variant-index=${variantIndex}">
 
-    <input type="hidden"
+    <!--<input type="hidden"
            id="variantCount"
            name="variantCount"
            th:value="${variantCount}"
-           hx-swap-oob="true" />
+           hx-swap-oob="true"/>-->
 
-    <div class="variant-row new-variant" th:attr="data-variant-index=${variantIndex}">
+    <div class="variant-card">
+        <label th:text="${'Yalahwyyy ' + variantIndex}"></label>
+        <div class="variant-content">
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_title'}">
+                    <i class="fas fa-tag"></i>
+                    Variant Title
+                </label>
+                <input type="text"
+                       th:id="${'variant_' + variantIndex + '_title'}"
+                       th:name="${'variants_' + variantIndex + '_title'}"
+                       th:field="*{product.variants[__${variantIndex}__].title}"
+                       class="form-control variant-title-input"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].title')} ? 'error-input' : ''"
+                       placeholder="e.g., Red Large T-Shirt">
+                <div class="error"
+                     th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].title')}"
+                     th:errors="*{product.variants[__${variantIndex}__].title}"></div>
+            </div>
 
-        <div class="variant-card">
-            <div class="variant-content">
-                <div class="form-group">
-                    <label class="form-label enhanced">
-                        <i class="fas fa-tag"></i>
-                        Variant Title
-                    </label>
-                    <input type="text"
-                           th:name="'variants[' + ${variantIndex} + '].title'"
-                           th:field="*{product.variants[__${variantIndex}__].title}"
-                           class="form-control enhanced variant-title-input"
-                           placeholder="e.g., Red Large T-Shirt">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_externalId'}">External ID</label>
+                <input type="text"
+                       th:id="${'variant_' + variantIndex + '_externalId'}"
+                       th:name="${'variant_' + variantIndex + '_externalId'}"
+                       th:field="*{product.variants[__${variantIndex}__].externalId}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].externalId')} ? 'error-input' : ''"
+                >
+                <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].externalId')}"
+                     th:errors="*{product.variants[__${variantIndex}__].externalId}"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">External ID</label>
-                    <input type="text"
-                           th:name="'variants[' + ${variantIndex} + '].externalId'"
-                           th:field="*{product.variants[__${variantIndex}__].externalId}"
-                           class="form-control enhanced">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_option1'}">Option 1</label>
+                <input type="text"
+                       th:name="${'variant_' + variantIndex + '_option1'}"
+                       th:field="*{product.variants[__${variantIndex}__].option1}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option1')} ? 'error-input' : ''"
+                       placeholder="e.g., Color">
+                <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].option1')}"
+                     th:errors="*{product.variants[__${variantIndex}__].option1}"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">Option 1</label>
-                    <input type="text"
-                           th:name="'variants[' + ${variantIndex} + '].option1'"
-                           th:field="*{product.variants[__${variantIndex}__].option1}"
-                           class="form-control enhanced"
-                           placeholder="e.g., Color">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_option2'}">Option 2</label>
+                <input type="text"
+                       th:id="${'variant_' + variantIndex + '_option2'}"
+                       th:name="${'variant_' + variantIndex + '_option2'}"
+                       th:field="*{product.variants[__${variantIndex}__].option2}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option2')} ? 'error-input' : ''"
+                       placeholder="e.g., Size">
+                <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].option2')}"
+                     th:errors="*{product.variants[__${variantIndex}__].option2}"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">Option 2</label>
-                    <input type="text"
-                           th:name="'variants[' + ${variantIndex} + '].option2'"
-                           th:field="*{product.variants[__${variantIndex}__].option2}"
-                           class="form-control enhanced"
-                           placeholder="e.g., Size">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_option3'}">Option 3</label>
+                <input type="text"
+                       th:id="${'variant_' + variantIndex + '_option3'}"
+                       th:name="${'variant_' + variantIndex + '_option3'}"
+                       th:field="*{product.variants[__${variantIndex}__].option3}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option3')} ? 'error-input' : ''"
+                       placeholder="e.g., Material">
+                <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].option3')}"
+                     th:errors="*{product.variants[__${variantIndex}__].option3}"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">Option 3</label>
-                    <input type="text"
-                           th:name="'variants[' + ${variantIndex} + '].option3'"
-                           th:field="*{product.variants[__${variantIndex}__].option3}"
-                           class="form-control enhanced"
-                           placeholder="e.g., Material">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_price'}">
+                    <i class="fas fa-dollar-sign"></i>
+                    Price *
+                </label>
+                <input type="number"
+                       th:id="${'variant_' + variantIndex + '_price'}"
+                       th:name="${'variant_' + variantIndex + '_price'}"
+                       th:field="*{product.variants[__${variantIndex}__].price}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].price')} ? 'error-input' : ''"
+                       step="0.01"
+                       min="0"
+                       placeholder="0.00">
+                <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].price')}"
+                     th:errors="*{product.variants[__${variantIndex}__].price}"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">
-                        <i class="fas fa-dollar-sign"></i>
-                        Price *
-                    </label>
-                    <input type="number"
-                           th:name="'variants[' + ${variantIndex} + '].price'"
-                           th:field="*{product.variants[__${variantIndex}__].price}"
-                           class="form-control enhanced"
-                           required
-                           step="0.01"
-                           min="0"
-                           placeholder="0.00">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_sku'}">
+                    SKU
+                </label>
+                <input type="text"
+                       th:id="${'variant_' + variantIndex + '_sku'}"
+                       th:name="${'variant_' + variantIndex + '_sku'}"
+                       th:field="*{product.variants[__${variantIndex}__].sku}"
+                       class="form-control"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].sku')} ? 'error-input' : ''"
+                       placeholder="Product SKU">
+                <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].sku')}"
+                     th:errors="*{product.variants[__${variantIndex}__].sku}"></div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">SKU</label>
-                    <input type="text"
-                           th:name="'variants[' + ${variantIndex} + '].sku'"
-                           th:field="*{product.variants[__${variantIndex}__].sku}"
-                           class="form-control enhanced"
-                           placeholder="Product SKU">
-                </div>
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${'variant_' + variantIndex + '_available'}">
+                    <i class="fas fa-check-circle"></i>
+                    Available
+                </label>
+                <select th:id="${'variant_' + variantIndex + '_available'}"
+                        th:name="${'variant_' + variantIndex + '_available'}"
+                        th:field="*{product.variants[__${variantIndex}__].available}"
+                        class="form-control">
+                    <option value="true" selected>Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label th:for="${'variant_' + variantIndex + '_imageFile'}"
+                       class="form-label">
+                    <i class="fas fa-image"></i>
+                    Variant Image
+                </label>
 
-                <div class="form-group">
-                    <label class="form-label enhanced">
-                        <i class="fas fa-check-circle"></i>
-                        Available
-                    </label>
-                    <select th:name="'variants[' + ${variantIndex} + '].available'"
-                            th:field="*{product.variants[__${variantIndex}__].available}"
-                            class="form-control enhanced">
-                        <option value="true" selected>Yes</option>
-                        <option value="false">No</option>
-                    </select>
+                <input type="file"
+                       th:id="${'variant_' + variantIndex + '_imageFile'}"
+                       th:name="${'variant_' + variantIndex + '_imageFile'}"
+                       th:field="*{product.variants[__${variantIndex}__].imageFile}"
+                       class="form-control"
+                       accept="image/*"
+                       th:onchange="'previewVariantImage(this, ' + ${variantIndex} + ')'">
+                <div class="image-preview" th:id="${'variant_' + variantIndex + 'imagePreview'}"
+                     style="display: none;">
+                    <img src="" alt="Preview"
+                         style="max-width: 100px; max-height: 100px; margin-top: 0.5rem; border-radius: 8px;">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-image"></i>
-                        Variant Image
-                    </label>
-                    <!--name="variantImages"-->
-<!--                          th:name="'variants[' + ${variantIndex} + '].imageFile'"
--->
-                   <input type="file"
-                          th:field="*{product.variants[__${variantIndex}__].imageFile}"
-                          class="form-control"
-                          accept="image/*"
-                          th:onchange="'previewVariantImage(this, ' + ${variantIndex} + ')'">
-                    <div class="image-preview" th:id="'image-preview-' + ${variantIndex}" style="display: none;">
-                        <img src="" alt="Preview" style="max-width: 100px; max-height: 100px; margin-top: 0.5rem; border-radius: 8px;">
-                    </div>
-                </div>
+            </div>
 
-                <div class="variant-actions">
-                    <button type="button" class="btn btn-danger enhanced" onclick="removeVariant(this)">
-                        <i class="fas fa-trash"></i> Remove
-                    </button>
-                </div>
+            <div class="variant-actions">
+                <button type="button" class="btn btn-danger" onclick="removeVariant(this)">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
             </div>
         </div>
     </div>
