@@ -29,7 +29,7 @@
                        th:name="${'variants_' + variantIndex + '_title'}"
                        th:field="*{product.variants[__${variantIndex}__].title}"
                        class="form-control variant-title-input"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].title')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].title') ? 'error-input' : ''}"
                        placeholder="e.g., Red Large T-Shirt">
                 <div class="error"
                      th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].title')}"
@@ -44,7 +44,7 @@
                        th:name="${'variant_' + variantIndex + '_externalId'}"
                        th:field="*{product.variants[__${variantIndex}__].externalId}"
                        class="form-control"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].externalId')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].externalId') ? 'error-input' : ''}"
                 >
                 <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].externalId')}"
                      th:errors="*{product.variants[__${variantIndex}__].externalId}"></div>
@@ -57,7 +57,7 @@
                        th:name="${'variant_' + variantIndex + '_option1'}"
                        th:field="*{product.variants[__${variantIndex}__].option1}"
                        class="form-control"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option1')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option1') ? 'error-input' : ''}"
                        placeholder="e.g., Color">
                 <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].option1')}"
                      th:errors="*{product.variants[__${variantIndex}__].option1}"></div>
@@ -71,7 +71,7 @@
                        th:name="${'variant_' + variantIndex + '_option2'}"
                        th:field="*{product.variants[__${variantIndex}__].option2}"
                        class="form-control"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option2')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option2') ? 'error-input' : ''}"
                        placeholder="e.g., Size">
                 <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].option2')}"
                      th:errors="*{product.variants[__${variantIndex}__].option2}"></div>
@@ -85,7 +85,7 @@
                        th:name="${'variant_' + variantIndex + '_option3'}"
                        th:field="*{product.variants[__${variantIndex}__].option3}"
                        class="form-control"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option3')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].option3') ? 'error-input' : ''}"
                        placeholder="e.g., Material">
                 <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].option3')}"
                      th:errors="*{product.variants[__${variantIndex}__].option3}"></div>
@@ -102,7 +102,7 @@
                        th:name="${'variant_' + variantIndex + '_price'}"
                        th:field="*{product.variants[__${variantIndex}__].price}"
                        class="form-control"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].price')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].price') ? 'error-input' : ''}"
                        step="0.01"
                        min="0"
                        placeholder="0.00">
@@ -120,7 +120,7 @@
                        th:name="${'variant_' + variantIndex + '_sku'}"
                        th:field="*{product.variants[__${variantIndex}__].sku}"
                        class="form-control"
-                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].sku')} ? 'error-input' : ''"
+                       th:classappend="${#fields.hasErrors('product.variants[__${variantIndex}__].sku') ? 'error-input' : ''}"
                        placeholder="Product SKU">
                 <div class="error" th:if="${#fields.hasErrors('product.variants[__${variantIndex}__].sku')}"
                      th:errors="*{product.variants[__${variantIndex}__].sku}"></div>

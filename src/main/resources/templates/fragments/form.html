@@ -26,7 +26,9 @@
                                slot="footer" variant="brand" data-dialog="close">Ok
                     </wa-button>
                 </wa-dialog>
-                <div id="error-container"></div>
+                <div id="error-container" th:if="${errorMessage != null}">
+                    <div th:replace="fragments/error :: error-message"></div>
+                </div>
 <!-- hx-on::after-request="handleFormSubmit(this, event)"-->
                 <form hx-post="/products"
                       th:object="${newProduct}"
@@ -46,7 +48,7 @@
                                    name="title"
                                    th:field="*{product.title}"
                                    class="form-control"
-                                   th:classappend="${#fields.hasErrors('product.title')} ? 'error-input' : ''"
+                                   th:classappend="${#fields.hasErrors('product.title') ? 'error-input' : ''}"
                                    placeholder="Enter product title">
                             <div class="error" th:if="${#fields.hasErrors('product.title')}" th:errors="*{product.title}"></div>
                         </div>
@@ -61,7 +63,7 @@
                                    name="vendor"
                                    th:field="*{product.vendor}"
                                    class="form-control"
-                                   th:classappend="${#fields.hasErrors('product.vendor')} ? 'error-input' : ''"
+                                   th:classappend="${#fields.hasErrors('product.vendor') ? 'error-input' : ''}"
                                    placeholder="Enter vendor name">
                             <div class="error" th:if="${#fields.hasErrors('product.vendor')}" th:errors="*{product.vendor}"></div>
                         </div>
@@ -76,7 +78,7 @@
                                    name="productType"
                                    th:field="*{product.productType}"
                                    class="form-control"
-                                   th:classappend="${#fields.hasErrors('product.productType')} ? 'error-input' : ''"
+                                   th:classappend="${#fields.hasErrors('product.productType') ? 'error-input' : ''}"
                                    placeholder="e.g., Clothing, Electronics">
                             <div class="error" th:if="${#fields.hasErrors('product.productType')}" th:errors="*{product.productType}"></div>
 
@@ -92,7 +94,7 @@
                                    name="external_id"
                                    th:field="*{product.externalId}"
                                    class="form-control"
-                                   th:classappend="${#fields.hasErrors('product.externalId')} ? 'error-input' : ''"
+                                   th:classappend="${#fields.hasErrors('product.externalId') ? 'error-input' : ''}"
                                    placeholder="External identifier">
                             <div class="error" th:if="${#fields.hasErrors('product.externalId')}" th:errors="*{product.externalId}"></div>
                         </div>
@@ -108,7 +110,7 @@
                         </div>
 
                         <input type="hidden" id="variantCount" name="variantCount" th:field="*{variantCount}" />
-                        <input type="checkbox" id="variantVisible0" name="variantVisible[0]" style="display: none;" th:checked="${visibleVariants != null ? visibleVariants[0] : true}" />
+                        <input type="checkbox" id="variantVisible0" name="variantVisible[0]" style="display: none;" th:checked="${visibleVariants != null ? visibleVariants[0] : false}" />
                         <input type="checkbox" id="variantVisible1" name="variantVisible[1]" style="display: none;" th:checked="${visibleVariants != null ? visibleVariants[1] : false}" />
                         <input type="checkbox" id="variantVisible2" name="variantVisible[2]" style="display: none;" th:checked="${visibleVariants != null ? visibleVariants[2] : false}" />
 
@@ -116,7 +118,7 @@
 
                             <div th:each="variantIndex : ${#numbers.sequence(0, 2)}"
                                  th:id="${'variant_' + variantIndex}"
-                                 th:style="${visibleVariants != null and visibleVariants[variantIndex] != null and !visibleVariants[variantIndex]} ? 'display: none;' : ''">
+                                 th:style="${visibleVariants != null and visibleVariants[variantIndex] != null and !visibleVariants[variantIndex] ? 'display: none;' : ''}">
                                 <div th:insert="fragments/add-variant :: variant-row(variantIndex=${variantIndex})"></div>
                             </div>
                         </div>

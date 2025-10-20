@@ -1,17 +1,11 @@
 package dev.js.productsdemo.service
 
-import dev.js.productsdemo.domain.Image
-import dev.js.productsdemo.domain.Variant
+import dev.js.productsdemo.controllers.UniqueViolationException
 import dev.js.productsdemo.mappers.toProduct
 import dev.js.productsdemo.mappers.toProductDTO
-import dev.js.productsdemo.mappers.toVariant
-import dev.js.productsdemo.mappers.toVariantDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductsResponse
-import dev.js.productsdemo.model.VariantDTO
-import dev.js.productsdemo.repository.ImageRepository
 import dev.js.productsdemo.repository.ProductRepository
-import dev.js.productsdemo.repository.VariantRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,11 +15,10 @@ import kotlin.math.ceil
 @Service
 class ProductServiceImpl(
 
-    private val imageService: ImageService,
     private val productRepository: ProductRepository,
-    private val variantRepository: VariantRepository,
-    private val imageRepository: ImageRepository,
+    private val variantService: VariantService,
     private val restTemplate: RestTemplate = RestTemplate()
+
 ) : ProductService {
     private val logger = LoggerFactory.getLogger(ProductService::class.java)
 
@@ -48,25 +41,22 @@ class ProductServiceImpl(
     @Transactional
     override fun saveProduct(productDTO: ProductDTO): ProductDTO {
         logger.info("Saving product: ${productDTO.title}")
+
+        productDTO.externalId?.run {
+            if (productRepository.findProductByExternalId(this) != null) {
+                throw UniqueViolationException("External ID $this already exists for a product")
+            }
+        }
+
         val productDTO = productRepository.saveProduct(productDTO.toProduct()).toProductDTO()
         logger.info("Product saved with ID: ${productDTO.uid}")
 
-        val savedVariants = mutableListOf<VariantDTO>()
-        productDTO.variants.filterNot {
-                // This will handle cases where variants were removed in the UI
+        val filteredVariants = productDTO.variants.filterNot {
+            // This will handle cases where variants were removed in the UI
                 variant -> variant.title.isBlank()
-        }.forEach { variantDTO ->
-            logger.info("Saving image for variant (${variantDTO.title})")
-            val savedImage = if (variantDTO.featuredImage != null || variantDTO.imageFile != null)
-                imageService.saveImage(variantDTO)
-            else null
-
-            variantRepository.saveOrUpdateVariant(variantDTO.copy(featuredImage = savedImage).toVariant())
-                ?.apply {
-                    savedVariants.add(this.toVariantDTO())
-                }
-
         }
+        val savedVariants = variantService.saveVariants(filteredVariants)
+
         return productDTO.copy(variants = savedVariants)
     }
 
@@ -120,34 +110,7 @@ class ProductServiceImpl(
 
                 // Save variants
                 productDTO.variants.forEach { variantDTO ->
-
-                    val featuredImage =
-                        imageRepository.findImageByExternalId(variantDTO.featuredImage?.externalId ?: -1L)
-                            ?: variantDTO.featuredImage?.let { imageDTO ->
-                                imageRepository.saveImage(
-                                    image = Image(
-                                        externalId = imageDTO.externalId,
-                                        src = imageDTO.src,
-                                        createdAt = imageDTO.createdAt
-                                    )
-                                )
-                            }
-
-                    variantRepository.saveOrUpdateVariant(
-                        variant = Variant(
-                            externalId = variantDTO.externalId,
-                            productId = productId,
-                            featuredImage = featuredImage,
-                            title = variantDTO.title,
-                            option1 = variantDTO.option1,
-                            option2 = variantDTO.option2,
-                            option3 = variantDTO.option3,
-                            sku = variantDTO.sku,
-                            price = variantDTO.price,
-                            available = variantDTO.available,
-                            createdAt = variantDTO.createdAt
-                        )
-                    )
+                    variantService.saveVariant(variantDTO.copy(productId = productId))
                 }
 
             }

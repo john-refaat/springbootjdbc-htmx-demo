@@ -16,17 +16,6 @@
         }
     }
 
-    function resetVariantImages() {
-        const previewDivs = document.querySelectorAll('[id^="image-preview-"]');
-        previewDivs.forEach(previewDiv => {
-            const img = previewDiv.querySelector('img');
-            if (img) {
-                img.src = '';
-            }
-            previewDiv.style.display = 'none';
-        });
-    }
-
     function closeVariantDetailsSection() {
         console.log('closeVariantDetailsSection');
         const variantsSection = document.querySelector('details.variants-section');
@@ -82,7 +71,7 @@
        const variantCount = document.getElementById("variantCount");
        const currentCount = parseInt(variantCount.value);
 
-       if (currentCount > 1) { // Keep at least one
+       if (currentCount > 0) { // Keep at least one
            const row = button.closest('.variant-row');
            const rowIndex = row.getAttribute('data-variant-index');
            console.log('rowIndex:', rowIndex, 'row:', row);
@@ -107,6 +96,16 @@
                input.value = '';
                input.disabled = true;
            });
+
+           // Clear preview image
+           const previewDiv = document.getElementById('variant_' + rowIndex + 'imagePreview');
+           if (previewDiv) {
+               const img = previewDiv.querySelector('img');
+               if (img) {
+                   img.src = '';
+               }
+               previewDiv.style.display = 'none';
+           }
 
            // Hide after animation
            setTimeout(() => {
@@ -220,5 +219,17 @@ document.body.addEventListener('htmx:afterSwap', function(evt) {
     if (evt.target.id === 'product-form' && evt.detail.xhr.status === 200) {
         console.log('>>> add product form submitted');
         handleFormSubmit(evt.target, evt);
+    }
+    if (evt.target.id === 'product-form' && evt.detail.xhr.status !== 200) {
+        console.log('>>> add product form submitted');
+        const firstError = document.querySelector('.error-message');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            const firstErrorInput = document.querySelector('div.error');
+            if (firstErrorInput) {
+                firstErrorInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
     }
 });

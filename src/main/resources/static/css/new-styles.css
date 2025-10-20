@@ -531,6 +531,15 @@ select.form-control option {
     border-color: #d32f2f;
 }
 
+.error-message {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
 
 /* ================================
    ANIMATIONS & KEYFRAMES

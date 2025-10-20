@@ -45,7 +45,7 @@ class JdbcVariantRepository(private val jdbcClient: JdbcClient) : VariantReposit
     }
 
 
-    private fun variantExists(externalId: Long): Boolean {
+    override fun externalIdExists(externalId: Long): Boolean {
         val sql = "SELECT COUNT(*) FROM variants WHERE external_id = :externalId"
         return jdbcClient.sql(sql)
             .param("externalId", externalId)

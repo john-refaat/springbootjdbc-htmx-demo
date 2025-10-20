@@ -1,10 +1,12 @@
 package dev.js.productsdemo.controllers
 
+import dev.js.productsdemo.controllers.ProductController.Companion.getEmptyProductForm
 import dev.js.productsdemo.model.ImageDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductRequest
 import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.service.ProductService
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
@@ -19,7 +21,16 @@ import java.io.File
 @Controller
 @RequestMapping("/products")
 class ProductController(private val productService: ProductService) {
-    private val logger = LoggerFactory.getLogger(ProductController::class.java)
+    companion object {
+        private val logger = LoggerFactory.getLogger(ProductController::class.java)
+        fun getEmptyProductForm(): ProductRequest =
+            ProductRequest(ProductDTO(variants = listOf(
+                VariantDTO(featuredImage = ImageDTO()),
+                VariantDTO(featuredImage = ImageDTO()),
+                VariantDTO(featuredImage = ImageDTO())
+            )))
+    }
+
 
     @GetMapping("")
     fun loadProducts(
@@ -33,33 +44,15 @@ class ProductController(private val productService: ProductService) {
         return "fragments/product-table :: product-table"
     }
 
-   /* @PostMapping("/variant-row")
-    fun getVariantRow(@ModelAttribute("newProduct") newProduct: ProductRequest, model: Model): String {
-        logger.info("Adding New Variant Row: {}", newProduct)
-        newProduct.variantCount += 1
-        newProduct.product.variants = listOf(
-            VariantDTO(featuredImage = ImageDTO()),
-            VariantDTO(featuredImage = ImageDTO()),
-            VariantDTO(featuredImage = ImageDTO()))
-        model.addAttribute("variantIndex", newProduct.variantCount - 1)
-        model.addAttribute("variantCount", newProduct.variantCount)
-        return "fragments/add-variant :: variant-row"
-    }
-*/
-//
-//    @RequestParam title: String,
-//    @RequestParam(required = false) vendor: String?,
-//    @RequestParam(required = false) productType: String?,
-//    @RequestParam(name = "pageSize", required = false) pageSize: Int?,
-
     @PostMapping("")
     fun addProduct(
         @Valid @ModelAttribute("newProduct") newProduct: ProductRequest,
         bindingResult: BindingResult,
-        @RequestParam("variantVisible[0]", required = false, defaultValue = "true") visible0: Boolean,
-        @RequestParam("variantVisible[1]", required = false, defaultValue = "false") visible1: Boolean,
-        @RequestParam("variantVisible[2]", required = false, defaultValue = "false") visible2: Boolean,
+        @RequestParam("variantVisible[0]", required = false) visible0: Boolean,
+        @RequestParam("variantVisible[1]", required = false) visible1: Boolean,
+        @RequestParam("variantVisible[2]", required = false) visible2: Boolean,
         model: Model,
+        request: HttpServletRequest,
         response: HttpServletResponse  // Add this
     ): String {
         if (bindingResult.hasErrors()) {
@@ -68,34 +61,40 @@ class ProductController(private val productService: ProductService) {
             // Pass visibility state back to the view
             val visibleVariants = listOf(visible0, visible1, visible2)
             model.addAttribute("visibleVariants", visibleVariants)
-
+            // IMPORTANT: Ensure we have exactly 3 variants in the product object
+            // even if some are empty, to match the form structure
+            while (newProduct.product.variants.size < 3) {
+                newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
+            }
             return "fragments/form :: product-form"
         }
+        try{
+            logger.info("Adding product: {}", newProduct)
+            // Process only visible variants
+            val visibleVariants = listOf(visible0, visible1, visible2)
+            val activeVariants = newProduct.product.variants.filterIndexed { index, _ ->
+                index < 3 && visibleVariants.getOrElse(index) { false }
+            }
+            val savedProduct = productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
+            logger.info("Saved product: {}", savedProduct)
 
-        logger.info("Adding product: {}", newProduct)
-        // Process only visible variants
-        val visibleVariants = listOf(visible0, visible1, visible2)
-        val activeVariants = newProduct.product.variants.filterIndexed { index, _ ->
-            index < 3 && visibleVariants.getOrElse(index) { false }
+            model.addAttribute("visibleVariants", listOf(false, false, false))
+            model.addAttribute("newProduct", getEmptyProductForm())
+            model.addAttribute("success", true)
+            return "fragments/form :: product-form"
+
+        } catch (e: Exception) {
+            // IMPORTANT: Ensure we have exactly 3 variants in the product object
+            // even if some are empty, to match the form structure
+            while (newProduct.product.variants.size < 3) {
+                newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
+            }
+            // Store form data so ExceptionHandler can restore it
+            request.setAttribute("newProduct", newProduct)
+            request.setAttribute("visibleVariants", listOf(visible0, visible1, visible2))
+            throw e
         }
-        val savedProduct = productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
-        logger.info("Saved product: {}", savedProduct)
-        // Return updated table
-       // val productsWithDetails = productService.getAllProductsWithDetails(0, newProduct.pageSize)
-
-        //model.addAttribute("productsWithDetails", productsWithDetails)
-        model.addAttribute("visibleVariants", listOf(true, false, false))
-        model.addAttribute("newProduct", ProductRequest(
-            product = ProductDTO(variants = listOf(
-                VariantDTO(featuredImage = ImageDTO()),
-                VariantDTO(featuredImage = ImageDTO()),
-                VariantDTO(featuredImage = ImageDTO()))
-            )
-        ))
-        model.addAttribute("success", true)
-        return "fragments/form :: product-form"
     }
-
 }
 
 @Controller
@@ -104,18 +103,7 @@ class IndexController {
     @GetMapping("", "/")
     fun index(model: Model): String {
         model.addAttribute("variantImages", listOf<MultipartFile>())
-        model.addAttribute("newProduct", ProductRequest(
-            product = ProductDTO(
-                title = "",
-                vendor = "",
-                productType = "",
-                variants = listOf(
-                    VariantDTO(featuredImage = ImageDTO()),
-                    VariantDTO(featuredImage = ImageDTO()),
-                    VariantDTO(featuredImage = ImageDTO()))
-            ),
-            pageSize = 5
-        ))
+        model.addAttribute("newProduct", getEmptyProductForm())
         return "index"
     }
 

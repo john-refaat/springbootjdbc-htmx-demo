@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<!-- Generic Error Message Fragment -->
+<div th:fragment="error-message" class="error-message" style="display: block; margin-bottom: 1rem;">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span th:text="${errorMessage}">Error occurred</span>
+</div>
+
+</body>
+</html>
