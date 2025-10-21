@@ -16,11 +16,6 @@
             </div>
         </summary>
         <div class="form-body">
-
-            <!--<div id="success-container" th:if="${success}">
-
-            </div>-->
-
             <wa-dialog label="Dialog" th:if="${success}" light-dismiss class="dialog-light-dismiss">
                 <div th:replace="fragments/success :: success-message"></div>
                 <wa-button
@@ -115,7 +110,7 @@
                         </h3>
                     </div>
 
-                    <input type="hidden" id="variantCount" name="variantCount" th:field="*{variantCount}"/>
+                    <input type="hidden" id="variantCount" name="variantCount" />
                     <input type="checkbox" id="variantVisible0" name="variantVisible[0]" style="display: none;"
                            th:checked="${visibleVariants != null ? visibleVariants[0] : false}"/>
                     <input type="checkbox" id="variantVisible1" name="variantVisible[1]" style="display: none;"

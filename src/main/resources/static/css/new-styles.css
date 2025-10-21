@@ -486,6 +486,30 @@ select.form-control option {
 }
 
 /* ================================
+   ACTION BUTTONS STACK
+   ================================ */
+.action-buttons-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.action-buttons-stack .btn {
+    width: 100%;
+    white-space: nowrap;
+}
+
+/* Adjust the Actions column width */
+.table-container th:last-child,
+.table-container td:last-child {
+    width: 150px;
+    min-width: 150px;
+    text-align: left;
+    white-space: normal;
+}
+
+/* ================================
    FEEDBACK STATES
    ================================ */
 .success-message {

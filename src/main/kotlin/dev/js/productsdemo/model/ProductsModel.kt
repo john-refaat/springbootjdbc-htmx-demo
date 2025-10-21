@@ -17,7 +17,6 @@ data class ProductRequest(
     @field:Valid
     val product: ProductDTO,
     var pageSize: Int = 5,
-    var variantCount: Int = 1,
     val mode:String = "create"
 )
 
