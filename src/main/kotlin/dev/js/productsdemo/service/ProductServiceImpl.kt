@@ -53,11 +53,30 @@ class ProductServiceImpl(
 
         val filteredVariants = productDTO.variants.filterNot {
             // This will handle cases where variants were removed in the UI
-                variant -> variant.title.isBlank()
+                variant ->
+            variant.title.isBlank()
         }
         val savedVariants = variantService.saveVariants(filteredVariants)
 
         return productDTO.copy(variants = savedVariants)
+    }
+
+    @Transactional
+    override fun updateProduct(uid: Long, productDTO: ProductDTO): ProductDTO {
+        logger.info("Updating product: ${productDTO.title}")
+        return getProductById(uid).copy(
+            title = productDTO.title,
+            externalId = productDTO.externalId,
+            productType = productDTO.productType,
+            vendor = productDTO.vendor
+        )
+            .run {
+                productRepository.updateProduct(this.toProduct())?.toProductDTO()
+            }
+            ?.also { logger.info("Successfully updated product: ${it.title}") }
+            ?: throw RuntimeException("Product ${productDTO.uid} not found")
+                .also { logger.error("Could not update product ${productDTO.uid}. Not found") }
+
     }
 
     override fun getProductById(id: Long): ProductDTO {
@@ -65,7 +84,8 @@ class ProductServiceImpl(
         return productRepository.findProductById(id)
             ?.toProductDTO()
             ?.also { logger.info("Successfully retrieved product: ${it.title}") }
-            ?: throw RuntimeException("Product $id not found").also { logger.error("Product $id not found") }
+            ?: throw RuntimeException("Product $id not found")
+                .also { logger.error("Product $id not found") }
     }
 
 

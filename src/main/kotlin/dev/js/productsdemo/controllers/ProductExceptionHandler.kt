@@ -41,7 +41,7 @@ class ProductExceptionHandler {
         } else {
             // Fallback to a new product
             model.addAttribute("visibleVariants", listOf(true, false, false))
-            model.addAttribute("newProduct", ProductController.getEmptyProductForm())
+            model.addAttribute("newProduct", ProductController.getCreateProductForm())
         }
     }
 

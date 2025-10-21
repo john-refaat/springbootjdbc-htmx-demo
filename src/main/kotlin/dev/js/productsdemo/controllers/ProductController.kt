@@ -1,6 +1,6 @@
 package dev.js.productsdemo.controllers
 
-import dev.js.productsdemo.controllers.ProductController.Companion.getEmptyProductForm
+import dev.js.productsdemo.controllers.ProductController.Companion.getCreateProductForm
 import dev.js.productsdemo.model.ImageDTO
 import dev.js.productsdemo.model.ProductDTO
 import dev.js.productsdemo.model.ProductRequest
@@ -23,7 +23,7 @@ import java.io.File
 class ProductController(private val productService: ProductService) {
     companion object {
         private val logger = LoggerFactory.getLogger(ProductController::class.java)
-        fun getEmptyProductForm(): ProductRequest =
+        fun getCreateProductForm(): ProductRequest =
             ProductRequest(ProductDTO(variants = listOf(
                 VariantDTO(featuredImage = ImageDTO()),
                 VariantDTO(featuredImage = ImageDTO()),
@@ -44,8 +44,9 @@ class ProductController(private val productService: ProductService) {
         return "fragments/product-table :: product-table"
     }
 
-    @PostMapping("")
-    fun addProduct(
+    @PostMapping(value = ["", "{uid}"])
+    fun saveOrUpdateProduct(
+        @PathVariable(required = false) uid: Long?,
         @Valid @ModelAttribute("newProduct") newProduct: ProductRequest,
         bindingResult: BindingResult,
         @RequestParam("variantVisible[0]", required = false) visible0: Boolean,
@@ -53,48 +54,65 @@ class ProductController(private val productService: ProductService) {
         @RequestParam("variantVisible[2]", required = false) visible2: Boolean,
         model: Model,
         request: HttpServletRequest,
-        response: HttpServletResponse  // Add this
+        response: HttpServletResponse
     ): String {
         if (bindingResult.hasErrors()) {
             response.status = HttpServletResponse.SC_BAD_REQUEST
 
-            // Pass visibility state back to the view
             val visibleVariants = listOf(visible0, visible1, visible2)
             model.addAttribute("visibleVariants", visibleVariants)
-            // IMPORTANT: Ensure we have exactly 3 variants in the product object
-            // even if some are empty, to match the form structure
+
             while (newProduct.product.variants.size < 3) {
                 newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
             }
             return "fragments/form :: product-form"
         }
-        try{
-            logger.info("Adding product: {}", newProduct)
+
+        try {
+            val isUpdate = uid != null
+            logger.info("{} product{}", if (isUpdate) "Updating" else "Adding", if (isUpdate) " with uid: $uid" else "")
+
             // Process only visible variants
             val visibleVariants = listOf(visible0, visible1, visible2)
             val activeVariants = newProduct.product.variants.filterIndexed { index, _ ->
                 index < 3 && visibleVariants.getOrElse(index) { false }
             }
-            val savedProduct = productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
-            logger.info("Saved product: {}", savedProduct)
+
+            val savedProduct = if (isUpdate) {
+                productService.updateProduct(
+                    uid = uid!!,
+                    productDTO = newProduct.product.copy(uid = uid, variants = activeVariants)
+                )
+            } else {
+                productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
+            }
+
+            logger.info("{} product: {}", if (isUpdate) "Updated" else "Saved", savedProduct)
 
             model.addAttribute("visibleVariants", listOf(false, false, false))
-            model.addAttribute("newProduct", getEmptyProductForm())
+            model.addAttribute("newProduct", getCreateProductForm())
             model.addAttribute("success", true)
+            model.addAttribute("successMessage", if (isUpdate) "Product updated successfully!" else "Product added successfully!")
             return "fragments/form :: product-form"
 
         } catch (e: Exception) {
-            // IMPORTANT: Ensure we have exactly 3 variants in the product object
-            // even if some are empty, to match the form structure
             while (newProduct.product.variants.size < 3) {
                 newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
             }
-            // Store form data so ExceptionHandler can restore it
             request.setAttribute("newProduct", newProduct)
             request.setAttribute("visibleVariants", listOf(visible0, visible1, visible2))
             throw e
         }
     }
+
+    @GetMapping("edit/{uid}")
+    fun editProduct(@PathVariable("uid") uid: Long, model: Model): String {
+        logger.info("Editing product with uid: {}", uid)
+        val product = productService.getProductById(uid)
+        model.addAttribute("newProduct", ProductRequest(product, mode="edit"))
+        return "fragments/form :: product-form"
+    }
+
 }
 
 @Controller
@@ -103,7 +121,7 @@ class IndexController {
     @GetMapping("", "/")
     fun index(model: Model): String {
         model.addAttribute("variantImages", listOf<MultipartFile>())
-        model.addAttribute("newProduct", getEmptyProductForm())
+        model.addAttribute("newProduct", getCreateProductForm())
         return "index"
     }
 

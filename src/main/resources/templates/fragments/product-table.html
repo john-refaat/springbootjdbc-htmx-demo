@@ -18,6 +18,7 @@
                 <th>Type</th>
                 <th>Variants</th>
                 <th>Image</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -37,6 +38,19 @@
                     <img th:unless="${#lists.isEmpty(product.variants) or #strings.isEmpty(product.variants[0]?.featuredImage?.src)}"
                          th:src="${product.variants[0]?.featuredImage?.src}" th:alt="${product.title}"
                          class="product-image">
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" title="Edit" hx-trigger="click"
+                            hx-target="#product-form" th:attr="hx-get=@{/products/edit/{uid}(uid=${product.uid})}"
+                            hx-swap="outerHTML show:top">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-success-secondary" title="Add variant">
+                        <i class="fas fa-plus"></i> Add variant
+                    </button>
+                    <button class="btn btn-sm btn-danger" title="Delete">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
                 </td>
             </tr>
             </tbody>
