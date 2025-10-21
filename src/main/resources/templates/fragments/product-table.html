@@ -31,7 +31,7 @@
                 <td>
                     <div class="variants-grid"  th:id="'variants-' + ${product.uid}"
                          th:unless="${#lists.isEmpty(product.variants)}">
-                        <div th:replace="fragments/variants-list :: variants-list(${product})"></div>
+                        <div th:replace="~{fragments/variants-list :: variants-list(${product})}"></div>
                     </div>
                 </td>
                 <td>

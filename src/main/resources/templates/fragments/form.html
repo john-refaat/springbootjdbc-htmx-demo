@@ -17,14 +17,14 @@
         </summary>
         <div class="form-body">
             <wa-dialog label="Dialog" th:if="${success}" light-dismiss class="dialog-light-dismiss">
-                <div th:replace="fragments/success :: success-message"></div>
+                <div th:replace="~{fragments/success :: success-message}"></div>
                 <wa-button
                         onclick="document.getElementById('products-table-container').scrollIntoView({behavior: 'smooth'})"
                         slot="footer" variant="brand" data-dialog="close">Ok
                 </wa-button>
             </wa-dialog>
             <div id="error-container" th:if="${errorMessage != null}">
-                <div th:replace="fragments/error :: error-message"></div>
+                <div th:replace="~{fragments/error :: error-message}"></div>
             </div>
             <!-- hx-on::after-request="handleFormSubmit(this, event)"-->
             <form th:hx-post="${newProduct.mode == 'edit' ? '/products/' + newProduct.product.uid : '/products'}"
@@ -123,7 +123,7 @@
                         <div th:each="variantIndex : ${#numbers.sequence(0, 2)}"
                              th:id="${'variant_' + variantIndex}"
                              th:style="${visibleVariants != null and visibleVariants[variantIndex] != null and !visibleVariants[variantIndex] ? 'display: none;' : ''}">
-                            <div th:insert="fragments/add-variant :: variant-row(variantIndex=${variantIndex})"></div>
+                            <div th:insert="~{fragments/add-variant :: variant-row(variantIndex=${variantIndex})}"></div>
                         </div>
                     </div>
 

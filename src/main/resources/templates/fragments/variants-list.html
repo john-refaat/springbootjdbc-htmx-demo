@@ -13,7 +13,7 @@
                  th:if="${iterStat.index < 3}"
                  th:attr="data-image=${variant.featuredImage?.src}">
 
-                <div th:replace="fragments/variant-details :: variant-details(${variant})"></div>
+                <div th:replace="~{fragments/variant-details :: variant-details(${variant})}"></div>
 
             </div>
             <div th:if="${product.variants.size() > 3}">
@@ -22,7 +22,7 @@
                          th:each="variant,iterStat : ${product.variants}"
                          th:if="${iterStat.index >= 3}"
                          th:attr="data-image=${variant.featuredImage?.src}">
-                        <div th:replace="fragments/variant-details :: variant-details(${variant})"></div>
+                        <div th:replace="~{fragments/variant-details :: variant-details(${variant})}"></div>
 
                     </div>
                 </div>

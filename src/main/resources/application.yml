@@ -27,6 +27,7 @@ server:
 logging:
   level:
     com.example.demo: DEBUG
+    org.springframework.web.servlet.resource.ResourceHttpRequestHandler: ERROR
 
 app:
   upload:
