@@ -178,6 +178,13 @@ document.body.addEventListener('htmx:afterSwap', function(evt) {
     }
 });
 
+function handleSaveSuccess(dialog, event) {
+    console.log('handleSaveSuccess');
+    console.log(dialog);
+    console.log(event);
+    htmx.trigger('body', 'refresh-products');
+    document.getElementById('products-table-container').scrollIntoView({behavior: 'smooth'})
+}
 
 function handleFormSubmit(form, event) {
     console.log('handleFormSubmit');
@@ -216,10 +223,10 @@ document.body.addEventListener('htmx:afterSwap', function(evt) {
     if (evt.target.id === 'products-table-container' && evt.detail.xhr.status === 200) {
         showAddForm();
     }
-    if (evt.target.id === 'product-form' && evt.detail.xhr.status === 200) {
-        console.log('>>> add product form submitted');
-        handleFormSubmit(evt.target, evt);
-    }
+//    if (evt.target.id === 'product-form' && evt.detail.xhr.status === 200) {
+//        console.log('>>> add product form submitted');
+//        handleFormSubmit(evt.target, evt);
+//    }
     if (evt.target.id === 'product-form' && evt.detail.xhr.status !== 200) {
         console.log('>>> add product form submitted');
         const firstError = document.querySelector('.error-message');

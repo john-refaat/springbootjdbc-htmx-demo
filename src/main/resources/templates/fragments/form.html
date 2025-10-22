@@ -16,11 +16,10 @@
             </div>
         </summary>
         <div class="form-body">
-            <wa-dialog label="Dialog" th:if="${success}" light-dismiss class="dialog-light-dismiss">
+            <wa-dialog id="success-dialog" label="Dialog" th:open="${success}" light-dismiss class="dialog-light-dismiss"
+                       hx-on:wa-hide="handleSaveSuccess(this, event)">
                 <div th:replace="~{fragments/success :: success-message}"></div>
-                <wa-button
-                        onclick="document.getElementById('products-table-container').scrollIntoView({behavior: 'smooth'})"
-                        slot="footer" variant="brand" data-dialog="close">Ok
+                <wa-button slot="footer" variant="brand" data-dialog="close">Ok
                 </wa-button>
             </wa-dialog>
             <div id="error-container" th:if="${errorMessage != null}">

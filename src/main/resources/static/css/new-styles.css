@@ -52,6 +52,7 @@ body {
     opacity: 0.9;
     position: relative;
     z-index: 1;
+    color: white;
 }
 
 /* Details/Summary Styling */

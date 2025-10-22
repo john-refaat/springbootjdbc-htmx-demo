@@ -8,7 +8,9 @@
     </div>
 </div>
 
-<div id="product-table" th:fragment="product-table">
+<div id="product-table" th:fragment="product-table"
+     th:hx-get="@{/products(currentPage=${productsWithDetails.currentPage},pageSize=${productsWithDetails.pageSize})}"
+     hx-trigger="refresh-products from:body">
     <div class="table-responsive">
         <table class="table">
             <thead>
