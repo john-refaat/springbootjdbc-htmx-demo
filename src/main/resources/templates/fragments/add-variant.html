@@ -5,6 +5,143 @@
     <title>Add Variant</title>
 </head>
 <body>
+<!-- Reusable variant fields fragment -->
+<div th:fragment="variant-fields(variantIndex, fieldPrefix, variant)">
+    <div class="variant-card">
+        <div class="variant-content">
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_title'}">
+                    <i class="fas fa-tag"></i>
+                    Variant Title
+                </label>
+                <input type="text"
+                       th:id="${fieldPrefix + '_title'}"
+                       th:name="${fieldPrefix + '_title'}"
+                       th:value="${variant?.title}"
+                       class="form-control variant-title-input"
+                       placeholder="e.g., Red Large T-Shirt">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_externalId'}">External ID</label>
+                <input type="text"
+                       th:id="${fieldPrefix + '_externalId'}"
+                       th:name="${fieldPrefix + '_externalId'}"
+                       th:value="${variant?.externalId}"
+                       class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_option1'}">Option 1</label>
+                <input type="text"
+                       th:id="${fieldPrefix + '_option1'}"
+                       th:name="${fieldPrefix + '_option1'}"
+                       th:value="${variant?.option1}"
+                       class="form-control"
+                       placeholder="e.g., Color">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_option2'}">Option 2</label>
+                <input type="text"
+                       th:id="${fieldPrefix + '_option2'}"
+                       th:name="${fieldPrefix + '_option2'}"
+                       th:value="${variant?.option2}"
+                       class="form-control"
+                       placeholder="e.g., Size">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_option3'}">Option 3</label>
+                <input type="text"
+                       th:id="${fieldPrefix + '_option3'}"
+                       th:name="${fieldPrefix + '_option3'}"
+                       th:value="${variant?.option3}"
+                       class="form-control"
+                       placeholder="e.g., Material">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_price'}">
+                    <i class="fas fa-dollar-sign"></i>
+                    Price *
+                </label>
+                <input type="number"
+                       th:id="${fieldPrefix + '_price'}"
+                       th:name="${fieldPrefix + '_price'}"
+                       th:value="${variant?.price}"
+                       class="form-control"
+                       step="0.01"
+                       min="0"
+                       placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_sku'}">
+                    SKU
+                </label>
+                <input type="text"
+                       th:id="${fieldPrefix + '_sku'}"
+                       th:name="${fieldPrefix + '_sku'}"
+                       th:value="${variant?.sku}"
+                       class="form-control"
+                       placeholder="Product SKU">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"
+                       th:for="${fieldPrefix + '_available'}">
+                    <i class="fas fa-check-circle"></i>
+                    Available
+                </label>
+                <select th:id="${fieldPrefix + '_available'}"
+                        th:name="${fieldPrefix + '_available'}"
+                        class="form-control">
+                    <option value="true" th:selected="${variant?.available == null or variant?.available}">Yes</option>
+                    <option value="false" th:selected="${variant?.available != null and !variant?.available}">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label th:for="${fieldPrefix + '_imageFile'}"
+                       class="form-label">
+                    <i class="fas fa-image"></i>
+                    Variant Image
+                </label>
+                <input type="file"
+                       th:id="${fieldPrefix + '_imageFile'}"
+                       th:name="${fieldPrefix + '_imageFile'}"
+                       class="form-control"
+                       accept="image/*"
+                       th:onchange="'previewVariantImage(this, ' + ${variantIndex} + ')'">
+                <div class="image-preview"
+                     th:id="${'variant_' + variantIndex + 'imagePreview'}"
+                     th:style="${variant?.featuredImage?.src != null ? 'display: block;' : 'display: none;'}">
+                    <img th:src="${variant?.featuredImage?.src}"
+                         alt="Preview"
+                         style="max-width: 100px; max-height: 100px; margin-top: 0.5rem; border-radius: 8px;">
+                </div>
+            </div>
+
+            <!-- Slot for additional buttons (different per context) -->
+            <div class="variant-actions" th:insert="${~{::actions}}">
+                <!-- Default: remove button -->
+                <button type="button" class="btn btn-danger" onclick="removeVariant(this)">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div th:fragment="variant-row(variantIndex)"
      th:object="${newProduct}"
      class="variant-row new-variant" th:attr="data-variant-index=${variantIndex}">
@@ -16,7 +153,6 @@
            hx-swap-oob="true"/>-->
 
     <div class="variant-card">
-        <label th:text="${'Yalahwyyy ' + variantIndex}"></label>
         <div class="variant-content">
             <div class="form-group">
                 <label class="form-label"

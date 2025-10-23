@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Variant</title>
+</head>
+<body>
+<div id="variant-form" th:fragment="create-variant-form(productUid)" th:object="${newVariant}">
+
+    <div id="variant-created-success" th:if="${successMessage != null}">
+        <script>
+            console.log('Variant created successfully!');
+            htmx.trigger(document.body, 'refresh-products');
+        </script>
+        <div th:replace="~{fragments/success :: success-message}"></div>
+    </div>
+
+    <form enctype="multipart/form-data"
+          th:hx-post="@{/products/{uid}/variants/create(uid=${newVariant.productId})}"
+          th:object="${newVariant}"
+          hx-target="#variant-form"
+          hx-swap="outerHTML">
+
+        <input type="hidden" name="productUid" th:field="*{productId}">
+
+        <div class="variant-card">
+            <div class="variant-content">
+                <div class="form-group">
+                    <label class="form-label" for="variant_title">
+                        <i class="fas fa-tag"></i>
+                        Variant Title
+                    </label>
+                    <input type="text"
+                           id="variant_title"
+                           th:field="*{title}"
+                           class="form-control variant-title-input"
+                           th:classappend="${#fields.hasErrors('title') ? 'error-input' : ''}"
+                           placeholder="e.g., Red Large T-Shirt">
+                    <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_externalId">External ID</label>
+                    <input type="text"
+                           id="variant_externalId"
+                           th:field="*{externalId}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('externalId') ? 'error-input' : ''}">
+                    <div class="error" th:if="${#fields.hasErrors('externalId')}" th:errors="*{externalId}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_option1">Option 1</label>
+                    <input type="text"
+                           id="variant_option1"
+                           th:field="*{option1}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('option1') ? 'error-input' : ''}"
+                           placeholder="e.g., Color">
+                    <div class="error" th:if="${#fields.hasErrors('option1')}" th:errors="*{option1}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_option2">Option 2</label>
+                    <input type="text"
+                           id="variant_option2"
+                           th:field="*{option2}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('option2') ? 'error-input' : ''}"
+                           placeholder="e.g., Size">
+                    <div class="error" th:if="${#fields.hasErrors('option2')}" th:errors="*{option2}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_option3">Option 3</label>
+                    <input type="text"
+                           id="variant_option3"
+                           th:field="*{option3}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('option3') ? 'error-input' : ''}"
+                           placeholder="e.g., Material">
+                    <div class="error" th:if="${#fields.hasErrors('option3')}" th:errors="*{option3}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_price">
+                        <i class="fas fa-dollar-sign"></i>
+                        Price *
+                    </label>
+                    <input type="number"
+                           id="variant_price"
+                           th:field="*{price}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('price') ? 'error-input' : ''}"
+                           step="0.01"
+                           min="0"
+                           placeholder="0.00">
+                    <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_sku">SKU</label>
+                    <input type="text"
+                           id="variant_sku"
+                           th:field="*{sku}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('sku') ? 'error-input' : ''}"
+                           placeholder="Product SKU">
+                    <div class="error" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variant_available">
+                        <i class="fas fa-check-circle"></i>
+                        Available
+                    </label>
+                    <select id="variant_available"
+                            th:field="*{available}"
+                            class="form-control">
+                        <option value="true" selected>Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="variant_imageFile" class="form-label">
+                        <i class="fas fa-image"></i>
+                        Variant Image
+                    </label>
+                    <input type="file"
+                           id="variant_imageFile"
+                           th:field="*{imageFile}"
+                           class="form-control"
+                           accept="image/*"
+                           onchange="previewVariantImage(this, 0)">
+                    <div class="image-preview" id="variant_imagePreview" style="display: none;">
+                        <img src="" alt="Preview"
+                             style="max-width: 100px; max-height: 100px; margin-top: 0.5rem; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div class="variant-actions">
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-save"></i> Add Variant to Product
+                    </button>
+                    <button type="button" class="btn btn-cancel"
+                            hx-get="/"
+                            hx-target="#product-form"
+                            hx-swap="outerHTML">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

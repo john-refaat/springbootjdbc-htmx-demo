@@ -1,5 +1,6 @@
   function previewVariantImage(input, variantIndex) {
-        const previewDiv = document.getElementById('variant_' + variantIndex + 'imagePreview');
+        console.log('previewVariantImage');
+        const previewDiv = input.nextElementSibling;
         const img = previewDiv.querySelector('img');
 
         if (input.files && input.files[0]) {

@@ -53,8 +53,13 @@ data class ProductDTO(
 
     @field:Valid
     @param:JsonProperty("variants")
-    var variants: List<VariantDTO> = listOf()
-)
+    var variants: List<VariantDTO> = listOf(),
+
+) {
+    // Computed property - calculated each time it's accessed
+    val displayImage: ImageDTO?
+        get() = variants.firstOrNull { it.featuredImage != null }?.featuredImage
+}
 
 data class VariantDTO(
     val uid: Long? = null,
