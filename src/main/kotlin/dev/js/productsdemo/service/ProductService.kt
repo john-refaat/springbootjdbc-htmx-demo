@@ -13,4 +13,5 @@ interface ProductService {
     fun updateProduct(uid: Long, productDTO: ProductDTO): ProductDTO
     fun fetchAndSaveExternalProducts()
     fun getAllProducts(page: Int, pageSize: Int?): ProductsResponse
+    fun deleteProduct(uid: Long)
 }

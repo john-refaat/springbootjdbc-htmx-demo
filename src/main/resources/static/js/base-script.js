@@ -241,3 +241,22 @@ document.body.addEventListener('htmx:afterSwap', function(evt) {
         }
     }
 });
+
+// Listen for successful deletion
+document.body.addEventListener('htmx:afterSwap', function(event) {
+    console.log('Event details:', event.detail);
+    if (event.detail.target.id === 'delete-product-dialog') {
+        console.log('Delete successful');
+
+        setTimeout(() => {
+            // Close the dialog
+            const dialog = document.getElementById('delete-product-dialog');
+            dialog.open = false;
+            console.log('Dialog closed');
+            // Trigger refresh
+            htmx.trigger(document.body, 'refresh-products');
+        }, 1000);
+
+    }
+});
+

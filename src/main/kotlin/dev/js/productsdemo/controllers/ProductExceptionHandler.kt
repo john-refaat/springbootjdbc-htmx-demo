@@ -23,7 +23,7 @@ class ProductExceptionHandler {
         model: Model,
         response: HttpServletResponse
     ): String {
-        logger.error("Unsupported operation: {}", ex.message)
+        logger.error("Unique Constraint Violation: {}", ex.message)
         response.status = HttpServletResponse.SC_BAD_REQUEST
         model.addAttribute("errorMessage", ex.message ?: "Invalid request")
         populateProductModel(request, model)
@@ -96,22 +96,7 @@ class ProductExceptionHandler {
         return "fragments/form :: product-form"
     }
 
-    // Handle database errors
-    @ExceptionHandler(DataAccessException::class)
-    fun handleDataAccessError(
-        ex: DataAccessException,
-        request: HttpServletRequest,
-        model: Model,
-        response: HttpServletResponse
-    ): String {
-        logger.error("Database error", ex)
 
-        response.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
-        model.addAttribute("errorMessage", "Database error occurred. Please try again later.")
-
-        populateProductModel(request, model)
-        return "fragments/form :: product-form"
-    }
 
     // Catch-all for any other exceptions
     @ExceptionHandler(Exception::class)

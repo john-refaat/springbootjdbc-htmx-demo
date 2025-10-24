@@ -44,7 +44,33 @@ class ProductController(private val productService: ProductService) {
         return "fragments/product-table :: product-table"
     }
 
-    @PostMapping(value = ["", "{uid}"])
+    @GetMapping("{uid}/delete")
+    fun deleteConfirmation(
+        @PathVariable("uid") uid: Long,
+        model: Model
+    ):String {
+        logger.info("Confirm deleting product with uid: {}", uid)
+
+        model.addAttribute("product", productService.getProductById(uid))
+        return "fragments/delete-product-dialog :: delete-product-dialog"
+    }
+
+    @PostMapping("{uid}/delete")
+    fun deleteProduct(
+        @PathVariable("uid") uid: Long,
+        model: Model
+    ):String {
+        logger.info("Deleting product with uid: {}", uid)
+        productService.deleteProduct(uid)
+
+        model.addAttribute("deleteSuccess", true)
+        model.addAttribute("successMessage", "Product deleted successfully!")
+
+        return "fragments/success :: success-message"
+    }
+
+
+    @PostMapping(value = ["create", "{uid}/update"])
     fun saveOrUpdateProduct(
         @PathVariable(required = false) uid: Long?,
         @Valid @ModelAttribute("newProduct") newProduct: ProductRequest,
@@ -105,7 +131,7 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    @GetMapping("edit/{uid}")
+    @GetMapping("{uid}/edit")
     fun editProduct(@PathVariable("uid") uid: Long, model: Model): String {
         logger.info("Editing product with uid: {}", uid)
         val product = productService.getProductById(uid)

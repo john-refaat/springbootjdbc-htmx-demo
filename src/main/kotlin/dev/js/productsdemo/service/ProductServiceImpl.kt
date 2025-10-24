@@ -1,5 +1,6 @@
 package dev.js.productsdemo.service
 
+import dev.js.productsdemo.controllers.ProductNotFoundException
 import dev.js.productsdemo.controllers.UniqueViolationException
 import dev.js.productsdemo.mappers.toProduct
 import dev.js.productsdemo.mappers.toProductDTO
@@ -101,6 +102,17 @@ class ProductServiceImpl(
             totalPages = pageSize?.run { ceil(count.toDouble() / this).toLong() },
             pageSize = pageSize
         )
+    }
+
+    override fun deleteProduct(uid: Long) {
+        logger.info("Deleting product with ID: $uid")
+        val deleted = productRepository.deleteProduct(uid)
+        if (deleted) {
+            logger.info("Successfully deleted product with ID: $uid")
+        } else {
+            logger.error("Product with ID: $uid not found")
+            throw ProductNotFoundException("Product $uid not found")
+        }
     }
 
     override fun fetchAndSaveExternalProducts() {

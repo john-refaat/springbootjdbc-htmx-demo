@@ -153,7 +153,7 @@ class JdbcProductRepository(private val jdbcClient: JdbcClient) : ProductReposit
 
     override fun deleteProduct(id: Long): Boolean {
         return jdbcClient.sql("DELETE FROM products WHERE id = :id")
-            .param(id)
+            .param("id", id)
             .update() == 1
     }
 

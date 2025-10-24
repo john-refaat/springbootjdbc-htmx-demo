@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Confirmation Dialog</title>
+</head>
+<body>
+<wa-dialog id="delete-product-dialog" th:fragment="delete-product-dialog" label="Confirm Delete" open>
+    <div slot="label">
+        <i class="fas fa-exclamation-triangle"></i>
+        Confirm Delete
+    </div>
+    <div id="product-delete-success"></div>
+    <div id="product-delete-error"></div>
+    <div class="dialog-content">
+        <div class="dialog-warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <p>Are you sure you want to delete this product?</p>
+        <p class="product-name" th:text="${product.title}" id="delete-product-name"></p>
+        <p style="color: #6b7280; font-size: 0.9rem; margin-top: 1rem;">
+            This action cannot be undone. All variants and associated data will be permanently removed.
+        </p>
+    </div>
+
+    <div slot="footer" class="dialog-actions">
+        <wa-button variant="default" data-dialog="close">
+            <i class="fas fa-times"></i> Cancel
+        </wa-button>
+        <wa-button variant="danger" id="confirm-delete-btn"
+                   th:hx-post="@{/products/{uid}/delete(uid=${product.uid})}"
+                   hx-swap="innerHTML"
+                   hx-trigger="click"
+                   hx-target="#delete-product-dialog"
+                   hx-target-error="#product-delete-error"
+                   hx-headers='{"X-CSRF-TOKEN": "${_csrf.token}"}'>
+            <i class="fas fa-trash" aria-hidden="true"></i> Delete Product
+        </wa-button>
+    </div>
+</wa-dialog>
+</body>
+</html>

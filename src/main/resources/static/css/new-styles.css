@@ -155,6 +155,30 @@ details[open] > summary::after {
     border-radius: 8px;
 }
 
+/* ===============================
+    Dialogs
+    ============================== */
+.dialog-content {
+    padding: 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: none;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+
+
+
 /* ================================
    FORMS
    ================================ */

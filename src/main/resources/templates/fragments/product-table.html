@@ -44,7 +44,7 @@
                 <td>
                     <div class="action-buttons-stack">
                         <button class="btn btn-sm btn-primary" title="Edit" hx-trigger="click"
-                                hx-target="#product-form" th:attr="hx-get=@{/products/edit/{uid}(uid=${product.uid})}"
+                                hx-target="#product-form" th:attr="hx-get=@{/products/{uid}/edit(uid=${product.uid})}"
                                 hx-swap="outerHTML show:top">
                             <i class="fas fa-edit"></i> Edit
                         </button>
@@ -53,7 +53,12 @@
                                 hx-swap="outerHTML show:top">
                             <i class="fas fa-plus"></i> Add variant
                         </button>
-                        <button class="btn btn-sm btn-danger" title="Delete">
+                        <button class="btn btn-sm btn-danger" title="Delete"
+                                hx-trigger="click"
+                                th:attr="data-product-uid=${product.uid},data-product-title=${product.title}"
+                                th:hx-get="@{/products/{uid}/delete(uid=${product.uid})}"
+                                hx-target="#delete-product-confirm"
+                                hx-swap="innerHTML">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </div>
@@ -97,6 +102,9 @@
             </div>
         </div>
     </div>
+    <!-- Delete confirmation dialog -->
+    <div id="delete-product-confirm"></div>
+
 </div>
 
 </html>
