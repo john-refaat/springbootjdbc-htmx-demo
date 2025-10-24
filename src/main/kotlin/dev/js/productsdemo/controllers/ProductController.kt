@@ -83,7 +83,7 @@ class ProductController(private val productService: ProductService) {
         response: HttpServletResponse
     ): String {
         if (bindingResult.hasErrors()) {
-            response.status = HttpServletResponse.SC_BAD_REQUEST
+            //response.status = HttpServletResponse.SC_BAD_REQUEST
 
             val visibleVariants = listOf(visible0, visible1, visible2)
             model.addAttribute("visibleVariants", visibleVariants)
@@ -122,11 +122,12 @@ class ProductController(private val productService: ProductService) {
             return "fragments/form :: product-form"
 
         } catch (e: Exception) {
-            while (newProduct.product.variants.size < 3) {
-                newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
-            }
-            request.setAttribute("newProduct", newProduct)
-            request.setAttribute("visibleVariants", listOf(visible0, visible1, visible2))
+            logger.error("Error saving product", e)
+//            while (newProduct.product.variants.size < 3) {
+//                newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
+//            }
+//            request.setAttribute("newProduct", newProduct)
+//            request.setAttribute("visibleVariants", listOf(visible0, visible1, visible2))
             throw e
         }
     }
@@ -153,18 +154,3 @@ class IndexController {
 
 }
 
-@Controller
-class ImageController(
-    @Value("\${app.upload.dir}") private val uploadDir: String,
-) {
-    @GetMapping("/images/{productId}/{variantId}")
-    @ResponseBody
-    fun serveFile(@PathVariable productId: String, @PathVariable variantId: String): ByteArray {
-        val productDir = File("$uploadDir/$productId")
-        val variantFile = productDir.listFiles { file ->
-            file.name.startsWith(variantId)
-        }?.firstOrNull() ?: throw RuntimeException("Image not found")
-
-        return variantFile.readBytes()
-    }
-}

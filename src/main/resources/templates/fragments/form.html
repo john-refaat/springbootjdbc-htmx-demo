@@ -22,14 +22,14 @@
                 <wa-button slot="footer" variant="brand" data-dialog="close">Ok
                 </wa-button>
             </wa-dialog>
-            <div id="error-container" th:if="${errorMessage != null}">
-                <div th:replace="~{fragments/error :: error-message}"></div>
+            <div id="error-container">
+                <!--<div th:replace="~{fragments/error :: error-message}"></div>-->
             </div>
             <!-- hx-on::after-request="handleFormSubmit(this, event)"-->
             <form th:hx-post="${newProduct.mode == 'edit' ? '/products/' + newProduct.product.uid +'/update' : '/products/create'}"
                   th:object="${newProduct}"
                   hx-target="#product-form"
-                  hx-target-error="#product-form"
+                  hx-target-error="#error-container"
                   hx-swap="outerHTML"
                   enctype="multipart/form-data">
                 <div class="form-grid">

@@ -1,14 +1,12 @@
 package dev.js.productsdemo.service
 
-import dev.js.productsdemo.controllers.UniqueViolationException
+import dev.js.productsdemo.exceptions.UniqueViolationException
 import dev.js.productsdemo.mappers.toVariant
 import dev.js.productsdemo.mappers.toVariantDTO
 import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.repository.VariantRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 @Service
 class VariantServiceImpl(

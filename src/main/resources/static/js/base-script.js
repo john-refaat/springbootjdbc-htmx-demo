@@ -191,11 +191,7 @@ function handleFormSubmit(form, event) {
     console.log('handleFormSubmit');
     console.log(event);
 
-    // Exit if target is add-variant button
-    if (event.target.classList.contains('add-variant-btn')) {
-        console.log('add variant button clicked');
-        return;
-    }
+
     console.log(event.detail.xhr.status)
     htmx.trigger('body', 'refresh-products');
 
@@ -242,9 +238,9 @@ document.body.addEventListener('htmx:afterSwap', function(evt) {
     }
 });
 
-// Listen for successful deletion
 document.body.addEventListener('htmx:afterSwap', function(event) {
     console.log('Event details:', event.detail);
+    // Listen for successful deletion
     if (event.detail.target.id === 'delete-product-dialog') {
         console.log('Delete successful');
 
@@ -257,6 +253,16 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
             htmx.trigger(document.body, 'refresh-products');
         }, 1000);
 
+    }
+    if (event.detail.target.id === 'product-form') {
+        console.log('Product form submitted');
+        document.getElementById('product-form').scrollIntoView({behavior: 'smooth'})
+    }
+    if (event.detail.target.id === 'error-container') {
+        console.log('Product form error');
+        document.getElementById('error-container').scrollIntoView({behavior: 'smooth'});
+        document.querySelector('.error').style.display = 'none';
+        document.querySelector('.error-input').classList.remove('error-input');
     }
 });
 

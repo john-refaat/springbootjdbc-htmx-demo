@@ -1,7 +1,8 @@
 package dev.js.productsdemo.service
 
-import dev.js.productsdemo.controllers.ProductNotFoundException
-import dev.js.productsdemo.controllers.UniqueViolationException
+
+import dev.js.productsdemo.exceptions.ProductNotFoundException
+import dev.js.productsdemo.exceptions.UniqueViolationException
 import dev.js.productsdemo.mappers.toProduct
 import dev.js.productsdemo.mappers.toProductDTO
 import dev.js.productsdemo.model.ProductDTO
