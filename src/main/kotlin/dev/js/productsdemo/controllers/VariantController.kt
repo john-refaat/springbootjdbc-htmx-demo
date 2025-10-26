@@ -2,13 +2,11 @@ package dev.js.productsdemo.controllers
 
 import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.service.VariantService
+import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.validation.BindingResult
+import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequestMapping("/products/{uid}/variants")
@@ -28,9 +26,15 @@ class VariantController(
     }
 
     @PostMapping("/create")
-    fun saveNewVariant(@PathVariable("uid") uid:Long, @ModelAttribute("newVariant") newVariant: VariantDTO,
+    fun saveNewVariant(@PathVariable("uid") uid:Long,
+                       @Valid @ModelAttribute("newVariant") newVariant: VariantDTO,
+                       bindingResult: BindingResult,
                        model: Model): String {
         logger.info("Saving new variant: {}", newVariant)
+        if (bindingResult.hasErrors()) {
+            logger.error("Validation error: {}", bindingResult.allErrors)
+            return "fragments/create-variant-form :: create-variant-form"
+        }
         variantService.saveVariant(newVariant.copy(productId = uid))
         model.addAttribute("successMessage", "Successfully created variant")
         model.addAttribute("newVariant", VariantDTO(productId = uid))

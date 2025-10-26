@@ -14,16 +14,18 @@
         </script>
         <div th:replace="~{fragments/success :: success-message}"></div>
     </div>
+    <div id="error-container"></div>
 
     <form enctype="multipart/form-data"
           th:hx-post="@{/products/{uid}/variants/create(uid=${newVariant.productId})}"
           th:object="${newVariant}"
-          hx-target="#variant-form"
-          hx-swap="outerHTML">
+          hx-target="#forms-container"
+          hx-target-error="#error-container"
+          hx-swap="innerHTML show:top">
 
         <input type="hidden" name="productUid" th:field="*{productId}">
 
-        <div class="form-container">
+        <div class="form-content">
             <div class="variant-content">
                 <div class="form-group">
                     <label class="form-label" for="variant_title">
