@@ -135,18 +135,21 @@ details[open] > summary::after {
 .btn-submit {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
-    width: 100%;
     font-size: 1.125rem;
     padding: 1rem 2rem;
 }
 
-.btn-success-secondary {
+.btn-success {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     font-size: 1.125rem;
     padding: 1rem 2rem;
 }
 
+.btn-long {
+    width: 100%;
+    font-size: 1.125rem;
+}
 
 .btn-danger {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
@@ -210,6 +213,36 @@ details[open] > summary::after {
 
 .form-body {
     padding: 2rem;
+}
+
+
+.form-content {
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+    position: relative;
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-content > div{
+
+}
+
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    margin-top: 0.75rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0; /* Prevent overflow */
+}
+
+.form-actions .btn {
+    flex: 1;
 }
 
 .form-grid {

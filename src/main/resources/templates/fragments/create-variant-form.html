@@ -23,7 +23,7 @@
 
         <input type="hidden" name="productUid" th:field="*{productId}">
 
-        <div class="variant-card">
+        <div class="form-container">
             <div class="variant-content">
                 <div class="form-group">
                     <label class="form-label" for="variant_title">
@@ -139,14 +139,14 @@
                     </div>
                 </div>
 
-                <div class="variant-actions">
+                <div class="form-actions">
                     <button type="submit" class="btn btn-submit">
                         <i class="fas fa-save"></i> Add Variant to Product
                     </button>
-                    <button type="button" class="btn btn-cancel"
-                            hx-get="/"
-                            hx-target="#product-form"
-                            hx-swap="outerHTML">
+                    <button type="button" class="btn"
+                            hx-get="/products/create"
+                            hx-target="#forms-container"
+                            hx-swap="innerHTML show:top">
                         <i class="fas fa-times"></i> Cancel
                     </button>
                 </div>

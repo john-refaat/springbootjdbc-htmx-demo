@@ -25,11 +25,6 @@
         }
     }
 
-    function showAddForm() {
-        const form = document.getElementById('add-product-form');
-        form.style.display = 'block';
-    }
-
 
    function addVariant() {
        const variantCount = document.getElementById("variantCount");
@@ -72,7 +67,7 @@
        const variantCount = document.getElementById("variantCount");
        const currentCount = parseInt(variantCount.value);
 
-       if (currentCount > 0) { // Keep at least one
+       if (currentCount > 0) {
            const row = button.closest('.variant-row');
            const rowIndex = row.getAttribute('data-variant-index');
            console.log('rowIndex:', rowIndex, 'row:', row);
@@ -172,9 +167,12 @@ function initializeVariantRows() {
 }
 
 // Run on page load and after HTMX swaps
-document.addEventListener('DOMContentLoaded', initializeVariantRows);
+document.addEventListener('DOMContentLoaded', function() {
+        initializeVariantRows();
+});
 document.body.addEventListener('htmx:afterSwap', function(evt) {
-    if (evt.target.id === 'product-form' || evt.target.closest('#product-form')) {
+    if (evt.target.id === 'product-form' || evt.target.closest('#product-form')
+        || evt.target.id === 'forms-container' || evt.target.closest('#forms-container')) {
         initializeVariantRows();
     }
 });
@@ -187,24 +185,6 @@ function handleSaveSuccess(dialog, event) {
     document.getElementById('products-table-container').scrollIntoView({behavior: 'smooth'})
 }
 
-function handleFormSubmit(form, event) {
-    console.log('handleFormSubmit');
-    console.log(event);
-
-
-    console.log(event.detail.xhr.status)
-    htmx.trigger('body', 'refresh-products');
-
-    // Show success message
-    //const successMessage = document.getElementById('success-container');
-    //console.log('success message: '+ successMessage);
-    //successMessage.style.display = 'block';
-
-    // Show success dialog
-    const dialog = document.querySelector('.dialog-light-dismiss');
-    dialog.open = true;
-}
-
 
 // HTMX event listeners
 document.body.addEventListener('htmx:beforeRequest', function(evt) {
@@ -215,31 +195,9 @@ document.body.addEventListener('htmx:afterRequest', function(evt) {
     evt.target.classList.remove('loading');
 });
 
-// Auto-show form after successful product load
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-    if (evt.target.id === 'products-table-container' && evt.detail.xhr.status === 200) {
-        showAddForm();
-    }
-//    if (evt.target.id === 'product-form' && evt.detail.xhr.status === 200) {
-//        console.log('>>> add product form submitted');
-//        handleFormSubmit(evt.target, evt);
-//    }
-    if (evt.target.id === 'product-form' && evt.detail.xhr.status !== 200) {
-        console.log('>>> add product form submitted');
-        const firstError = document.querySelector('.error-message');
-        if (firstError) {
-            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            const firstErrorInput = document.querySelector('div.error');
-            if (firstErrorInput) {
-                firstErrorInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    }
-});
 
 document.body.addEventListener('htmx:afterSwap', function(event) {
-    console.log('Event details:', event.detail);
+    console.log('After Swap Event details:', event.detail.target.id);
     // Listen for successful deletion
     if (event.detail.target.id === 'delete-product-dialog') {
         console.log('Delete successful');
@@ -254,10 +212,7 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
         }, 1000);
 
     }
-    if (event.detail.target.id === 'product-form') {
-        console.log('Product form submitted');
-        document.getElementById('product-form').scrollIntoView({behavior: 'smooth'})
-    }
+
     if (event.detail.target.id === 'error-container') {
         console.log('Product form error');
         document.getElementById('error-container').scrollIntoView({behavior: 'smooth'});
@@ -265,4 +220,3 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
         document.querySelector('.error-input').classList.remove('error-input');
     }
 });
-

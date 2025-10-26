@@ -44,13 +44,13 @@
                 <td>
                     <div class="action-buttons-stack">
                         <button class="btn btn-sm btn-primary" title="Edit" hx-trigger="click"
-                                hx-target="#product-form" th:attr="hx-get=@{/products/{uid}/edit(uid=${product.uid})}"
-                                hx-swap="outerHTML show:top">
+                                hx-target="#forms-container" th:attr="hx-get=@{/products/{uid}/edit(uid=${product.uid})}"
+                                hx-swap="innerHTML show:top">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-success-secondary" title="Add variant" hx-trigger="click"
-                                hx-target="#product-form" th:attr="hx-get=@{/products/{uid}/variants/create(uid=${product.uid})}"
-                                hx-swap="outerHTML show:top">
+                        <button class="btn btn-sm btn-success" title="Add variant" hx-trigger="click"
+                                hx-target="#forms-container" th:attr="hx-get=@{/products/{uid}/variants/create(uid=${product.uid})}"
+                                hx-swap="innerHTML show:top">
                             <i class="fas fa-plus"></i> Add variant
                         </button>
                         <button class="btn btn-sm btn-danger" title="Delete"

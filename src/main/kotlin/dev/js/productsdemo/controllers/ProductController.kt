@@ -24,11 +24,15 @@ class ProductController(private val productService: ProductService) {
     companion object {
         private val logger = LoggerFactory.getLogger(ProductController::class.java)
         fun getCreateProductForm(): ProductRequest =
-            ProductRequest(ProductDTO(variants = listOf(
-                VariantDTO(featuredImage = ImageDTO()),
-                VariantDTO(featuredImage = ImageDTO()),
-                VariantDTO(featuredImage = ImageDTO())
-            )))
+            ProductRequest(
+                ProductDTO(
+                    variants = listOf(
+                        VariantDTO(featuredImage = ImageDTO()),
+                        VariantDTO(featuredImage = ImageDTO()),
+                        VariantDTO(featuredImage = ImageDTO())
+                    )
+                )
+            )
     }
 
 
@@ -39,7 +43,7 @@ class ProductController(private val productService: ProductService) {
         model: Model
     ): String {
         logger.info("Loading products with page: {}, size: {}", currentPage, pageSize)
-        val productsWithDetails = productService.getAllProductsWithDetails(currentPage?:0, pageSize)
+        val productsWithDetails = productService.getAllProductsWithDetails(currentPage ?: 0, pageSize)
         model.addAttribute("productsWithDetails", productsWithDetails)
         return "fragments/product-table :: product-table"
     }
@@ -48,7 +52,7 @@ class ProductController(private val productService: ProductService) {
     fun deleteConfirmation(
         @PathVariable("uid") uid: Long,
         model: Model
-    ):String {
+    ): String {
         logger.info("Confirm deleting product with uid: {}", uid)
 
         model.addAttribute("product", productService.getProductById(uid))
@@ -59,7 +63,7 @@ class ProductController(private val productService: ProductService) {
     fun deleteProduct(
         @PathVariable("uid") uid: Long,
         model: Model
-    ):String {
+    ): String {
         logger.info("Deleting product with uid: {}", uid)
         productService.deleteProduct(uid)
 
@@ -91,53 +95,52 @@ class ProductController(private val productService: ProductService) {
             while (newProduct.product.variants.size < 3) {
                 newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
             }
-            return "fragments/form :: product-form"
+            return "fragments/product-form :: product-form"
         }
 
-        try {
-            val isUpdate = uid != null
-            logger.info("{} product{}", if (isUpdate) "Updating" else "Adding", if (isUpdate) " with uid: $uid" else "")
+        val isUpdate = uid != null
+        logger.info("{} product{}", if (isUpdate) "Updating" else "Adding", if (isUpdate) " with uid: $uid" else "")
 
-            // Process only visible variants
-            val visibleVariants = listOf(visible0, visible1, visible2)
-            val activeVariants = newProduct.product.variants.filterIndexed { index, _ ->
-                index < 3 && visibleVariants.getOrElse(index) { false }
-            }
-
-            val savedProduct = if (isUpdate) {
-                productService.updateProduct(
-                    uid = uid!!,
-                    productDTO = newProduct.product.copy(uid = uid, variants = activeVariants)
-                )
-            } else {
-                productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
-            }
-
-            logger.info("{} product: {}", if (isUpdate) "Updated" else "Saved", savedProduct)
-
-            model.addAttribute("visibleVariants", listOf(false, false, false))
-            model.addAttribute("newProduct", getCreateProductForm())
-            model.addAttribute("success", true)
-            model.addAttribute("successMessage", if (isUpdate) "Product updated successfully!" else "Product added successfully!")
-            return "fragments/form :: product-form"
-
-        } catch (e: Exception) {
-            logger.error("Error saving product", e)
-//            while (newProduct.product.variants.size < 3) {
-//                newProduct.product.variants += VariantDTO(featuredImage = ImageDTO())
-//            }
-//            request.setAttribute("newProduct", newProduct)
-//            request.setAttribute("visibleVariants", listOf(visible0, visible1, visible2))
-            throw e
+        // Process only visible variants
+        val visibleVariants = listOf(visible0, visible1, visible2)
+        val activeVariants = newProduct.product.variants.filterIndexed { index, _ ->
+            index < 3 && visibleVariants.getOrElse(index) { false }
         }
+
+        val savedProduct = if (isUpdate) {
+            productService.updateProduct(
+                uid = uid!!,
+                productDTO = newProduct.product.copy(uid = uid, variants = activeVariants)
+            )
+        } else {
+            productService.saveProduct(productDTO = newProduct.product.copy(variants = activeVariants))
+        }
+
+        logger.info("{} product: {}", if (isUpdate) "Updated" else "Saved", savedProduct)
+
+        model.addAttribute("visibleVariants", listOf(false, false, false))
+        model.addAttribute("newProduct", getCreateProductForm())
+        model.addAttribute("success", true)
+        model.addAttribute(
+            "successMessage",
+            if (isUpdate) "Product updated successfully!" else "Product added successfully!"
+        )
+        return "fragments/product-form :: product-form"
     }
 
     @GetMapping("{uid}/edit")
     fun editProduct(@PathVariable("uid") uid: Long, model: Model): String {
         logger.info("Editing product with uid: {}", uid)
         val product = productService.getProductById(uid)
-        model.addAttribute("newProduct", ProductRequest(product, mode="edit"))
-        return "fragments/form :: product-form"
+        model.addAttribute("newProduct", ProductRequest(product, mode = "edit"))
+        return "fragments/product-form :: product-form"
+    }
+
+    @GetMapping("create")
+    fun createProduct(model: Model): String {
+        logger.info("Loading create product form")
+        model.addAttribute("newProduct", getCreateProductForm())
+        return "fragments/product-form :: product-form"
     }
 
 }
