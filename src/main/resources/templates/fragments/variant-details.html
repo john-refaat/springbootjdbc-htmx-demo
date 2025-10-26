@@ -49,8 +49,12 @@
                 </div>
 
                 <div class="variant-actions">
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i> Edit
+                    <button class="btn btn-sm btn-primary"
+                            hx-trigger="click"
+                            hx-target="#forms-container"
+                            th:hx-get="@{/products/{productUid}/variants/{variantUid}/update(productUid=${variant.productId},variantUid=${variant.uid})}"
+                            hx-swap="innerHTML show:top">
+                    <i class="fas fa-edit"></i> Edit
                     </button>
                     <button class="btn btn-sm btn-outline-secondary">
                         <i class="fas fa-copy"></i> Duplicate

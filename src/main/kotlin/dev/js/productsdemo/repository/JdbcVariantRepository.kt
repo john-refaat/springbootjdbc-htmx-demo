@@ -44,6 +44,29 @@ class JdbcVariantRepository(private val jdbcClient: JdbcClient) : VariantReposit
             .orElse(null)
     }
 
+    override fun findVariantByIdAndProductId(
+        id: Long,
+        productId: Long
+    ): Variant? {
+        val sql = """
+            SELECT v.id, v.external_id, v.product_id, v.title, v.option1, v.option2, v.option3, v.sku, v.price, v.available, v.created_at,
+                   i.id as image_id, i.external_id as image_external_id, i.src, i.created_at as image_created_at
+            FROM variants v
+            LEFT JOIN images i ON v.image_id = i.id
+            WHERE v.id = :id
+            AND v.product_id = :productId
+        """.trimIndent()
+
+        return jdbcClient.sql(sql)
+            .param("id", id)
+            .param("productId", productId)
+            .query { rs, _ ->
+                mapResultSetToVariant(rs)
+            }
+            .optional()
+            .orElse(null)
+    }
+
 
     override fun externalIdExists(externalId: Long): Boolean {
         val sql = "SELECT COUNT(*) FROM variants WHERE external_id = :externalId"

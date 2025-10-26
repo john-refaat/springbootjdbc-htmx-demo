@@ -6,6 +6,7 @@ interface VariantRepository {
 
     fun findVariantsByProductId(productId: Long): List<Variant>
     fun findVariantById(id: Long): Variant?
+    fun findVariantByIdAndProductId(id: Long, productId: Long): Variant?
     fun externalIdExists(externalId: Long): Boolean
     fun findVariantByExternalId(externalId: Long): Variant?
     fun saveOrUpdateVariant(variant: Variant): Variant?

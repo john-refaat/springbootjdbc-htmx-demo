@@ -5,7 +5,7 @@
     <title>Create Variant</title>
 </head>
 <body>
-<div id="variant-form" th:fragment="create-variant-form(productUid)" th:object="${newVariant}">
+<div id="variant-form" th:fragment="create-update-variant-form(productUid)">
 
     <div id="variant-created-success" th:if="${successMessage != null}">
         <script>
@@ -17,13 +17,14 @@
     <div id="error-container"></div>
 
     <form enctype="multipart/form-data"
-          th:hx-post="@{/products/{uid}/variants/create(uid=${newVariant.productId})}"
-          th:object="${newVariant}"
+          th:hx-post="@{/products/{uid}/variants/{action}(uid=${variantForm.productId}, action=${variantForm.uid == null ? 'create' : variantForm.uid + '/update'})}"
+          th:object="${variantForm}"
           hx-target="#forms-container"
           hx-target-error="#error-container"
           hx-swap="innerHTML show:top">
 
         <input type="hidden" name="productUid" th:field="*{productId}">
+        <input type="hidden" name="uid" th:field="*{uid}">
 
         <div class="form-content">
             <div class="variant-content">

@@ -55,6 +55,7 @@ fun ImageDTO.toImage(): Image = Image(
 )
 
 fun VariantDTO.toVariant(): Variant = Variant(
+    id = this.uid,
     externalId = this.externalId,
     productId = this.productId,
     featuredImage = featuredImage?.toImage(),

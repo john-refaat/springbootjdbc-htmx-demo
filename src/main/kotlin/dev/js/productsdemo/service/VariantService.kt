@@ -5,4 +5,8 @@ import dev.js.productsdemo.model.VariantDTO
 interface VariantService {
     fun saveVariants(variants: List<VariantDTO>): List<VariantDTO>
     fun saveVariant(variant: VariantDTO): VariantDTO?
+    fun findVariantById(id: Long): VariantDTO?
+    fun findVariantByIdAndProductId(id: Long, productId: Long): VariantDTO?
+    fun updateVariant(id:Long, variant: VariantDTO): VariantDTO?
+    fun deleteVariant(id: Long)
 }
