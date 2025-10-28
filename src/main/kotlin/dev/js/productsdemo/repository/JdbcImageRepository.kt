@@ -28,6 +28,13 @@ class JdbcImageRepository(private val jdbcClient: JdbcClient) : ImageRepository 
         return image.copy(id = generatedId)
     }
 
+    override fun findAllImages(): List<Image> {
+        val sql = "SELECT * FROM images"
+        return jdbcClient.sql(sql)
+            .query(Image::class.java)
+            .list()
+    }
+
     private fun extractTimeStampTZ(key: Any?): OffsetDateTime = when (val v = key) {
         is OffsetDateTime -> v
         is Timestamp -> v.toInstant().atOffset(ZoneOffset.UTC) // TIMESTAMPTZ represents an instant

@@ -8,6 +8,7 @@ import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.repository.VariantRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class VariantServiceImpl(
@@ -31,6 +32,7 @@ class VariantServiceImpl(
         }
     }
 
+    @Transactional
     override fun saveVariant(variant: VariantDTO): VariantDTO? {
         logger.info("Saving image for variant (${variant.title})")
         variant.externalId?.apply {
@@ -67,6 +69,7 @@ class VariantServiceImpl(
             .also { logger.error("Could not find variant $id in product with ID: $productId") }
     }
 
+    @Transactional
     override fun updateVariant(id: Long, variant: VariantDTO): VariantDTO? {
         logger.info("Updating variant: ${variant.title}")
 
