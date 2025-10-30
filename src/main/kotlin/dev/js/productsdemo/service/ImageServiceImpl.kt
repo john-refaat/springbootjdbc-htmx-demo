@@ -33,12 +33,17 @@ class ImageServiceImpl(
             logger.error("Image file is null for variant: ${variantDTO.title}")
             throw IllegalArgumentException("Image file cannot be null")
         }
+
+        validateOriginalFilename(variantDTO.imageFile.originalFilename)
+
+
         val filename = generateUniqueFilename(
             variantDTO.title.replace(Regex("[\\s/\\\\<>:\"|?*]"), "_"),
             variantDTO.imageFile.originalFilename
         )
 
-        val directory = File("$uploadDir/${variantDTO.productId}")
+        val dirRelativePath = "images/${variantDTO.productId}"
+        val directory = File(uploadDir, dirRelativePath)
         if (!directory.exists()) {
             logger.debug("Creating directory: ${directory.absolutePath}")
             directory.mkdirs()
@@ -58,16 +63,16 @@ class ImageServiceImpl(
             }
         }
         logger.info("Successfully stored image file: ${variantDTO.productId}/$filename")
-        return "images/${variantDTO.productId}/$filename"
+        return "$dirRelativePath/$filename"
     }
 
     override fun saveImage(
         variantDTO: VariantDTO
-    ): ImageDTO {
+    ): ImageDTO? {
         logger.info("Saving image for variant: ${variantDTO.title}")
         if (variantDTO.featuredImage == null && variantDTO.imageFile == null) {
             logger.error("Tried to Save Image but no Image attached to variant")
-            throw IllegalArgumentException("No Image Attached")
+            return null
         }
 
         val savedImage = createAndSaveImage(variantDTO)
@@ -108,7 +113,20 @@ class ImageServiceImpl(
 
     private fun generateUniqueFilename(title: String, originalFileName: String?=".jpg"): String {
         val timestamp = Instant.now().toEpochMilli()
-        val extension = originalFileName?.substringAfterLast(".")
+        val extension = originalFileName?.substringAfterLast(".")?.takeIf { it.isNotBlank() } ?: "jpg"
         return "${title}_${timestamp}.$extension"
     }
+
+    private fun validateOriginalFilename(filename: String?) {
+        if (filename.isNullOrBlank()) {
+            logger.error("Original filename is null or blank")
+            throw IllegalArgumentException("Original filename cannot be null or blank")
+        }
+
+        if (!filename.matches(Regex("^[a-zA-Z0-9._-]+$"))) {
+            logger.error("Invalid original filename: $filename")
+            throw IllegalArgumentException("Original filename contains invalid characters")
+        }
+    }
+
 }

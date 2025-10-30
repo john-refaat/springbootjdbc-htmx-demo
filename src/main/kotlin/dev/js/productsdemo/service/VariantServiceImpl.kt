@@ -4,6 +4,7 @@ import dev.js.productsdemo.exceptions.UniqueViolationException
 import dev.js.productsdemo.exceptions.VariantNotFoundException
 import dev.js.productsdemo.mappers.toVariant
 import dev.js.productsdemo.mappers.toVariantDTO
+import dev.js.productsdemo.model.ImageDTO
 import dev.js.productsdemo.model.VariantDTO
 import dev.js.productsdemo.repository.VariantRepository
 import org.slf4j.LoggerFactory
@@ -25,7 +26,9 @@ class VariantServiceImpl(
         val duplicateTitles = variants.groupBy { it.title }.any { (_, variants) -> variants.size > 1 }
         if (duplicateTitles)
             throw UniqueViolationException("Title must be unique for each variant")
-
+        val duplicateSKUs = variants.groupBy { it.sku }.any { (_, variants) -> variants.size > 1 }
+        if (duplicateSKUs)
+            throw UniqueViolationException("SKU must be unique for each variant")
 
         return variants.mapNotNull {
             saveVariant(it)
@@ -40,11 +43,10 @@ class VariantServiceImpl(
                 throw UniqueViolationException("External ID ${variant.externalId} already exists for a variant")
         }
 
-        val featuredImage = if (variant.featuredImage != null && variant.featuredImage.externalId != null) {
-            imageService.findImageByExternalId(variant.featuredImage.externalId)
-        } else if (variant.featuredImage != null || variant.imageFile != null) {
-            imageService.saveImage(variant)
-        } else null
+        val featuredImage: ImageDTO? =  variant.featuredImage?.externalId?.let {
+            imageService.findImageByExternalId(it)
+        }?:
+        imageService.saveImage(variant)
 
         return variantRepository.saveOrUpdateVariant(variant.copy(featuredImage = featuredImage).toVariant())
             ?.toVariantDTO()
@@ -85,9 +87,8 @@ class VariantServiceImpl(
         }
             ?.also { logger.info("Successfully updated variant: ${it.title}") }
 
-            ?: throw RuntimeException("Variant $id not found")
+            ?: throw VariantNotFoundException("Variant $id not found")
                 .also { logger.error("Could not update variant $id") }
-
     }
 
     override fun deleteVariant(id: Long) {

@@ -21,11 +21,11 @@ data class Variant(
     val productId: Long?,
     val featuredImage: Image? = null,
     val title: String,
-    val option1: String?,
-    val option2: String?,
-    val option3: String?,
-    val sku: String,
-    val price: BigDecimal?,
+    val option1: String? = null,
+    val option2: String? = null,
+    val option3: String? = null,
+    val sku: String = "",
+    val price: BigDecimal? = null,
     val available: Boolean = true,
     val createdAt: OffsetDateTime? = null,
     val imageFile: MultipartFile? = null
@@ -35,5 +35,5 @@ data class Image(
     val id: Long? = null,
     val externalId: Long? = null,
     val src: String?,
-    val createdAt: OffsetDateTime? = null
+    val createdAt: OffsetDateTime? = OffsetDateTime.now()
 )

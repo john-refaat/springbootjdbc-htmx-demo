@@ -16,6 +16,8 @@ class ImageRepositoryTest @Autowired constructor(
 
     @BeforeEach
     fun setup() {
+        val count = imageRepository.findAllImages().count()
+        println("Images found: $count")
         savedImage = imageRepository.saveImage(
             Image(
                 externalId = 1L,

@@ -17,3 +17,7 @@ spring:
 logging:
   level:
     org.springframework.jdbc.core: DEBUG
+
+app:
+  upload:
+    dir: ${user.dir}/uploads
